@@ -6,8 +6,8 @@
 <link type="text/css" rel="stylesheet" href="/Css/stylesheet.css" />
 <title>Registration Page</title>
 <%
-	if (session.getAttribute("Username") == null
-			|| session.getAttribute("Username") == "") {
+	if (session.getAttribute("EmployeeName") == null
+			|| session.getAttribute("EmployeeName") == "") {
 
 	} else {
 		response.setHeader("Cache-Control",
@@ -112,7 +112,8 @@ function passwordCheck(){
 					<tr>
 						<td>CompanyName</td>
 						<td>:<input maxlength="30" placeholder="Abcdef" value=""
-							name="CompanyName" size="20" type="text" id="companyName" required></td>
+							name="CompanyName" size="20" type="text" id="companyName"
+							required></td>
 					</tr>
 					<tr>
 						<td>Team</td>
@@ -126,7 +127,9 @@ function passwordCheck(){
 					</tr>
 					<tr>
 						<td>Address</td>
-						<td>:<textarea  rows="3" cols="30" id="address" name="Address" placeholder="Address" style="resize: none;max-width: 100px; max-height: 100px;"></textarea></td>
+						<td>:<textarea rows="3" cols="30" id="address" name="Address"
+								placeholder="Address"
+								style="resize: none; max-width: 100px; max-height: 100px;"></textarea></td>
 					</tr>
 					<tr>
 						<td>EmailId</td>

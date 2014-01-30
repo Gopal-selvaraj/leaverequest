@@ -1,7 +1,5 @@
 package com.employeedetails;
 
-import java.util.Date;
-
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -24,8 +22,8 @@ public class EmployeeBeanClass {
 	private String emailId;
 	private String password;
 	private String mobileNo;
-	private Date employeeDob;
-	private Date employeeDoj;
+	private String employeeDob;
+	private String employeeDoj;
 	private String companyName;
 	
 	public Key getKey() {
@@ -76,19 +74,19 @@ public class EmployeeBeanClass {
 		this.password = password;
 	}
 
-	public Date getEmployeeDob() {
+	public String getEmployeeDob() {
 		return employeeDob;
 	}
 
-	public void setEmployeeDob(Date employeeDob) {
+	public void setEmployeeDob(String employeeDob) {
 		this.employeeDob = employeeDob;
 	}
 
-	public Date getEmployeeDoj() {
+	public String getEmployeeDoj() {
 		return employeeDoj;
 	}
 
-	public void setEmployeeDoj(Date employeeDoj) {
+	public void setEmployeeDoj(String employeeDoj) {
 		this.employeeDoj = employeeDoj;
 	}
 

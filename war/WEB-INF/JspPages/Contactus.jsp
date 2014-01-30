@@ -5,16 +5,14 @@
 <link type="text/css" rel="stylesheet" href="/Css/stylesheet.css" />
 <title>Welcome Page</title>
 <%
-	if (session.getAttribute("Username") == null
-			|| session.getAttribute("Username") == "") {
-
-	} else {
+	if (session.getAttribute("EmployeeName") != null
+			|| session.getAttribute("EmployeeName") != "") {
 		response.setHeader("Cache-Control",
 				"no-cache, no-store, must-revalidate");
 		response.setHeader("Pragma", "no-cache");
 		response.setDateHeader("Expires", 0);
 
-	}
+	} 
 %>
 </head>
 <body bgcolor="Teal">
@@ -32,7 +30,7 @@
 		</div>
 
 		<%
-			if (session.getAttribute("Username") == null) {
+			if (session.getAttribute("EmployeeName") == null) {
 		%>
 		<div class="Menu">
 
@@ -43,15 +41,9 @@
 			} else {
 		%>
 		<div class="Menu" style="width: 200px;">
-			<a href="UserProfile.com"><%=session.getAttribute("Username")%></a>
+			<a href="UserProfile.com"><%=session.getAttribute("EmployeeName")%></a>
 		</div>
-		<%
-			if (session.getAttribute("Count") != null) {
-		%>
-		<div class="Menu" style="width: 50px;">
-			<%=session.getAttribute("Count")%>
-		</div>
-		<%} %>
+
 		<div class="Menu">
 			<a href="Logout.com">Logout</a>
 		</div>

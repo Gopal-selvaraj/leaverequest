@@ -1,37 +1,35 @@
 package com.leaverequest;
 
-import java.util.Date;
-
-import javax.jdo.annotations.IdGeneratorStrategy;
+//import javax.jdo.annotations.IdGeneratorStrategy;
+//import javax.jdo.annotations.Persistent;
+//import javax.jdo.annotations.PrimaryKey;
+//import com.google.appengine.api.datastore.Key;
 import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-
-import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
 public class LeaveRequestBeanClass {
 	
-	@PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Key key;
+//	@PrimaryKey
+//    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+//	private Key key;
 	private String nameOfApplicant;
 	private String team;
+	private String role;
 	private String nameOfPoc;
-	private String request;
+	//private String request;
 	private String status;
-	private Date leaveFrom;
-	private Date leaveTo;
-	private Date appliedDate;
-	private Date approvedDate;
+	private String leaveFrom;
+	private String leaveTo;
+	private String appliedDate;
+	private String approvedDate;
 
-	public Key getKey() {
-		return key;
-	}
-
-	public void setKey(Key key) {
-		this.key = key;
-	}
+//	public Key getKey() {
+//		return key;
+//	}
+//
+//	public void setKey(Key key) {
+//		this.key = key;
+//	}
 
 	public String getNameOfApplicant() {
 		return nameOfApplicant;
@@ -49,6 +47,14 @@ public class LeaveRequestBeanClass {
 		this.team = team;
 	}
 
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 	public String getNameOfPoc() {
 		return nameOfPoc;
 	}
@@ -57,13 +63,13 @@ public class LeaveRequestBeanClass {
 		this.nameOfPoc = nameOfPoc;
 	}
 
-	public String getRequest() {
-		return request;
-	}
-
-	public void setRequest(String request) {
-		this.request = request;
-	}
+//	public String getRequest() {
+//		return request;
+//	}
+//
+//	public void setRequest(String request) {
+//		this.request = request;
+//	}
 
 	public String getStatus() {
 		return status;
@@ -73,35 +79,35 @@ public class LeaveRequestBeanClass {
 		this.status = status;
 	}
 
-	public Date getLeaveFrom() {
+	public String getLeaveFrom() {
 		return leaveFrom;
 	}
 
-	public void setLeaveFrom(Date leaveFrom) {
+	public void setLeaveFrom(String leaveFrom) {
 		this.leaveFrom = leaveFrom;
 	}
 
-	public Date getLeaveTo() {
+	public String getLeaveTo() {
 		return leaveTo;
 	}
 
-	public void setLeaveTo(Date leaveTo) {
+	public void setLeaveTo(String leaveTo) {
 		this.leaveTo = leaveTo;
 	}
 
-	public Date getAppliedDate() {
+	public String getAppliedDate() {
 		return appliedDate;
 	}
 
-	public void setAppliedDate(Date appliedDate) {
+	public void setAppliedDate(String appliedDate) {
 		this.appliedDate = appliedDate;
 	}
 
-	public Date getApprovedDate() {
+	public String getApprovedDate() {
 		return approvedDate;
 	}
 
-	public void setApprovedDate(Date approvedDate) {
+	public void setApprovedDate(String approvedDate) {
 		this.approvedDate = approvedDate;
 	}
 

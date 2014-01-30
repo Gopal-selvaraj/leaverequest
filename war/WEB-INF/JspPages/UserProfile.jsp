@@ -5,8 +5,8 @@
 <link type="text/css" rel="stylesheet" href="/Css/stylesheet.css" />
 <title>UserProfile Page</title>
 <%
-	if (session.getAttribute("Username") == null
-			|| session.getAttribute("Username") == "") {
+	if (session.getAttribute("EmployeeName") == null
+			|| session.getAttribute("EmployeeName") == "") {
 		response.sendRedirect("Index.com");
 	} else {
 		response.setHeader("Cache-Control",
@@ -32,7 +32,7 @@
 		</div>
 
 		<%
-			if (session.getAttribute("Username") == null) {
+			if (session.getAttribute("EmployeeName") == null) {
 		%>
 		<div class="Menu">
 
@@ -43,15 +43,14 @@
 			} else {
 		%>
 		<div class="Menu" style="width: 200px;">
-			<a href="UserProfile.com"><%=session.getAttribute("Username")%></a>
+			<a href="UserProfile.com"><%=session.getAttribute("EmployeeName")%></a>
 		</div>
-		<%
-			if (session.getAttribute("Count") != null) {
-		%>
-		<div class="Menu" style="width: 50px;">
-			<%=session.getAttribute("Count")%>
+		<div class="Menu">
+
+			<a href="Leave.com">LeaveRequest</a>
+
 		</div>
-		<%} %>
+
 		<div class="Menu">
 			<a href="Logout.com">Logout</a>
 		</div>
@@ -64,6 +63,7 @@
 			<a href="Contactus.com">ContactUs</a>
 
 		</div>
+
 	</div>
 	<div></div>
 	<div class="break"></div>
@@ -73,53 +73,50 @@
 			<br> <span>Adaptavant Techologies</span>
 		</p>
 		<div class="design1">
-			<div class="profileimages">
-				<img src="<%=session.getAttribute("Image")%>" />
-			</div>
-			<div class="details">
+			<div class="details" style="margin-left: 105px;">
 				<div class="designtable"
-					style="margin-top: 10px; text-align: center; color: #eb0684; margin-left: 5px;"><%=session.getAttribute("Username")%></div>
-				<table style="margin-top: 10px;">
-					<%if(session.getAttribute("DateofBirth")!=null){ %><tr>
+					style="margin-top: 10px; text-align: center; color: #eb0684; margin-left: 35px;"><%=session.getAttribute("EmployeeName")%></div>
+				<table style="margin-top: 10px; margin-left: 10px;">
+					<%if(session.getAttribute("EmployeeDob")!=null){ %><tr>
 						<td>
 							<h4>DateofBirth</h4>
 						</td>
 						<td><h4>
 								:
-								<%=session.getAttribute("DateofBirth")%></h4></td>
+								<%=session.getAttribute("EmployeeDob")%></h4></td>
 					</tr>
-					<%} if(session.getAttribute("DateofRegistration")!=null){ %><tr>
+					<%} if(session.getAttribute("EmployeeDoj")!=null){ %><tr>
 						<td>
 							<h4>Company</h4>
 						</td>
 						<td><h4>
 								:
-								<%=session.getAttribute("Company")%></h4></td>
+								<%=session.getAttribute("CompanyName")%></h4></td>
 					</tr>
-					<%} if(session.getAttribute("Userid")!=null){ %>
+					<%} if(session.getAttribute("EmployeeId")!=null){ %>
 					<tr>
 						<td>
 							<h4>Userid</h4>
 						</td>
 						<td><h4>
 								:
-								<%=session.getAttribute("Userid")%></h4></td>
+								<%=session.getAttribute("EmployeeId")%></h4></td>
 					</tr>
-					<%} if(session.getAttribute("Emailid")!=null){ %>
+					<%} if(session.getAttribute("EmailId")!=null){ %>
 					<tr>
 						<td>
 							<h4>Emailid</h4>
 						</td>
 						<td><h4>
-								:<%=session.getAttribute("Emailid")%></h4></td>
+								:<%=session.getAttribute("EmailId")%></h4></td>
 					</tr>
-					<%} if(session.getAttribute("Mobileno")!=null){ %>
+					<%} if(session.getAttribute("MobileNo")!=null){ %>
 					<tr>
 						<td>
 							<h4>Mobileno</h4>
 						</td>
 						<td><h4>
-								:<%=session.getAttribute("Mobileno")%></h4></td>
+								:<%=session.getAttribute("MobileNo")%></h4></td>
 					</tr>
 					<%}%>
 				</table>

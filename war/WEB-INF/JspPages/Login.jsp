@@ -6,8 +6,8 @@
 <link type="text/css" rel="stylesheet" href="/Css/stylesheet.css" />
 <title>Login Page</title>
 <%
-	if (session.getAttribute("Username") == null
-			|| session.getAttribute("Username") == "") {
+	if (session.getAttribute("EmployeeName") == null
+			|| session.getAttribute("EmployeeName") == "") {
 
 	} else {
 		response.setHeader("Cache-Control",
@@ -34,11 +34,11 @@
 		</div>
 
 		<%
-			if (session.getAttribute("Username") == null) {
+			if (session.getAttribute("EmployeeName") == null) {
 			} else {
 		%>
 		<div class="Menu" style="width: 200px;">
-			<a href="UserProfile.com"><%=session.getAttribute("Username")%></a>
+			<a href="UserProfile.com"><%=session.getAttribute("EmployeeName")%></a>
 		</div>
 		<div class="Menu" style="width: 50px;">
 			<%=session.getAttribute("Count")%>
@@ -57,7 +57,7 @@
 	</div>
 	<div></div>
 	<div class="break"></div>
-	<form action="Loginauth.com" method="post">
+	<form action="/Loginauth.com" method="post">
 
 		<div class="design">
 			<p>
@@ -68,8 +68,8 @@
 				<br> <br> <br> <br> <br> <br>
 				<table style="margin-left: 125px">
 					<tr>
-						<td>EmployeeId</td>
-						<td>:<input maxlength="30" name="EmployeeId" size="20"
+						<td>EmailId</td>
+						<td>:<input maxlength="30" name="EmailId" size="20"
 							type="text"></td>
 					</tr>
 					<tr>
@@ -79,9 +79,13 @@
 					</tr>
 				</table>
 				<br>
-				<div class="button" style="margin-top: 25px ;">
-					<input type="submit" value="Login">
-				</div>
+				<table style="margin-left: 30px">
+					<tr>
+						<td><div class="button" style="margin-top: 25px;">
+								<input type="submit" value="Login">
+							</div></td>
+					</tr>
+				</table>
 
 
 			</div>

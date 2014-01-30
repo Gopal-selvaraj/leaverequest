@@ -1,5 +1,6 @@
 <%@page pageEncoding="Cp1252" contentType="text/html; charset=Cp1252"%>
-<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory"%>
+<%@ page
+	import="com.google.appengine.api.blobstore.BlobstoreServiceFactory"%>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
@@ -14,8 +15,8 @@
 <link type="text/css" rel="stylesheet" href="/Css/stylesheet.css" />
 <title>Retrieval Page</title>
 <%
-	if (session.getAttribute("Username") == null
-			|| session.getAttribute("Username") == "") {
+	if (session.getAttribute("EmployeeName") == null
+			|| session.getAttribute("EmployeeName") == "") {
 		response.sendRedirect("Index.htm");
 	} else {
 		response.setHeader("Cache-Control",
@@ -204,10 +205,10 @@
 		</div>
 
 		<%
-			if (session.getAttribute("Username") != null) {
+			if (session.getAttribute("EmployeeName") != null) {
 		%>
 		<div class="Menu" style="width: 200px;">
-			<a href="UserProfile.com"><%=session.getAttribute("Username")%></a>
+			<a href="UserProfile.com"><%=session.getAttribute("EmployeeName")%></a>
 		</div>
 		<%
 			if (session.getAttribute("Count") != null) {
@@ -248,7 +249,7 @@
 						<td>Username</td>
 						<td>:<input disabled id="userName" maxlength="30"
 							name="UserName" size="20" type="text"
-							value="<%=session.getAttribute("Username")%>"
+							value="<%=session.getAttribute("EmployeeName")%>"
 							onblur="userNameValidation()" required></td>
 					</tr>
 
@@ -320,7 +321,9 @@
 			</form>
 			<div
 				style="margin-left: 0px; margin-top: 0px; height: 70px; width: 470px; background-color: #22CCFF">
-				<form	action="<%=blobstoreService.createUploadUrl("/UpdateImage.com")%>"	method="post" enctype="multipart/form-data">
+				<form
+					action="<%=blobstoreService.createUploadUrl("/UpdateImage.com")%>"
+					method="post" enctype="multipart/form-data">
 					<table style="margin-left: 18px;">
 						<tr>
 							<td><img style="margin-top: 2px; margin-left: 2px;"
@@ -332,7 +335,7 @@
 								value="Upload"></td>
 						</tr>
 					</table>
-					
+
 				</form>
 
 			</div>

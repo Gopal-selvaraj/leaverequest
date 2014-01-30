@@ -20,16 +20,31 @@
 			<br> <br>
 			<h3>Registered Successfully!</h3>
 			<h3>Click the below links to choose your Page</h3>
-			<br> <br> <br> <br> <br> <br> <br>
+			<br>
+			<p>
+				<br>
+				<br>
+			</p>
+			<p>
+				<br>
+			</p>
+			<p>
+				<br>
+			</p>
+			<p>
+				<br>
+			</p>
+			<p>
+				<br>
+			</p>
 			<br>
 			<hr>
-			<table>
+			<table style="margin-left: 130px">
 				<tr>
-					<td>
-						<h3>
-							<a href="Login.com">Back to Login page</a>
-						</h3>
-					</td>
+					<td><h3>
+							<a href="Login.com">Back to Login
+								page&nbsp;&nbsp;&nbsp;&nbsp;</a>
+						</h3></td>
 					<td>
 						<h3>
 							<a href="Index.com"> Back to Home page</a>

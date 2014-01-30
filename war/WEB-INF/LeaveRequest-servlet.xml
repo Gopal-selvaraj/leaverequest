@@ -8,8 +8,12 @@ http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<context:component-scan base-package="com.leaverequest,com.employeedetails" />
-	
-	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+
+	<!-- <bean id="log4jInitialization"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	</bean> -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/JspPages/" />
 		<property name="suffix" value=".jsp" />
 	</bean>

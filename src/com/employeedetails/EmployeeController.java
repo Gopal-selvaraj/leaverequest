@@ -1,10 +1,8 @@
 package com.employeedetails;
+
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.leaverequest.PMF;
-
 
 @Controller
 public class EmployeeController {
@@ -43,6 +40,12 @@ public class EmployeeController {
 
 		return "Contactus";
 	}
+	
+	@RequestMapping(value = "UserProfile.com")
+	public String userProfile() {
+
+		return "UserProfile";
+	}
 
 	@RequestMapping(value = "Logout.com")
 	public String Logout(HttpServletRequest req) {
@@ -64,17 +67,12 @@ public class EmployeeController {
 
 		try {
 
-			// Create the Object for SimpleDateFormat for Date type.
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-			Date employeeDob = null;
-			Date employeeDoj = null;
-
 			// Get the values from the Jsp Form and set values into Datastore by
 			// using the employee Object.
 			String employeeName = req.getParameter("EmployeeName");
 			String employeeId = req.getParameter("EmployeeId");
-			String edob = req.getParameter("DateOfBirth");
-			String edoj = req.getParameter("DateOfJoining");
+			String employeeDob = req.getParameter("DateOfBirth");
+			String employeeDoj = req.getParameter("DateOfJoining");
 			String companyName = req.getParameter("CompanyName");
 			String team = req.getParameter("Team");
 			String role = req.getParameter("Role");
@@ -82,11 +80,6 @@ public class EmployeeController {
 			String emailId = req.getParameter("EmailId");
 			String mobileNo = req.getParameter("MobileNo");
 			String password = req.getParameter("Password");
-
-			if (edob != null && edoj != null) {
-				employeeDob = formatter.parse(edob);
-				employeeDoj = formatter.parse(edoj);
-			}
 
 			employee.setEmployeeName(employeeName);
 			employee.setEmployeeDob(employeeDob);
@@ -101,7 +94,7 @@ public class EmployeeController {
 			employee.setEmployeeId(employeeId);
 
 			Key key = KeyFactory.createKey(
-					EmployeeBeanClass.class.getSimpleName(), employeeId);
+					EmployeeBeanClass.class.getSimpleName(), emailId);
 			employee.setKey(key);
 			pm.makePersistent(employee);
 
@@ -115,73 +108,69 @@ public class EmployeeController {
 		// view
 		return new ModelAndView("RegisteredSuccessfully");
 	}
-	
-	
-		@RequestMapping(value = "Loginauth.com", method = RequestMethod.POST)
-		public String userInfo(HttpServletRequest req) throws IOException {
 
-			PersistenceManager pm = PMF.get().getPersistenceManager();
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/Loginauth.com", method = RequestMethod.POST)
+	public String userInfo(HttpServletRequest req) throws IOException {
 
-			String employeeId = req.getParameter("EmployeeId");
-			String password = req.getParameter("Password");
+		PersistenceManager pm = PMF.get().getPersistenceManager();
 
-			try {
-				// int increment = 0;
+		String emailId = req.getParameter("EmailId");
+		String password = req.getParameter("Password");
 
-				// Query filter is used to filter the particular field with
-				// value
-				Query query = pm.newQuery(EmployeeBeanClass.class);
-				query.setFilter("employeeId =='" + employeeId + "' ");
+		try {
+			// int increment = 0;
 
-				// using the List to get the entries from the data store
-				@SuppressWarnings("unchecked")
-				List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query.execute();
-				for (EmployeeBeanClass employee : employees) {
-					if (employee.getEmployeeId().equals(employeeId)
-							&& employee.getPassword().equals(password)) {
-//						HttpSession session = req.getSession();
+			// Query filter is used to filter the particular field with
+			// value
+			Query query = pm.newQuery(EmployeeBeanClass.class);
+			query.setFilter("emailId =='" + emailId + "' ");
+			
+			// using the List to get the entries from the data store
+			
+			List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query.execute();
+			for (EmployeeBeanClass employee : employees) {
+				if ((employee.getEmailId()).equals(emailId)
+						&& (employee.getPassword()).equals(password)) {
+					
+					HttpSession session = req.getSession();
 
-						/*
-						 * model.addAttribute("Username", employee.getUserName());
-						 * model.addAttribute("Company", employee.getCompany());
-						 * model
-						 * .addAttribute("DateofBirth",employee.getDateOfBirth());
-						 * model.addAttribute("DateofRegistration",employee.
-						 * getDateOfRegistration());
-						 * model.addAttribute("Userid",employee.getUserId());
-						 * model.addAttribute("Emailid", employee.getEmailId());
-						 * model.addAttribute("Image", employee.getImage());
-						 * model.addAttribute("Mobileno", employee.getMobileNo());
-						 * model.addAttribute("Count",employee.getCount());
-						 */
+					/*
+					 * model.addAttribute("Username", employee.getUserName());
+					 * model.addAttribute("Company", employee.getCompany());
+					 * model
+					 * .addAttribute("DateofBirth",employee.getDateOfBirth());
+					 * model.addAttribute("DateofRegistration",employee.
+					 * getDateOfRegistration());
+					 * model.addAttribute("Userid",employee.getUserId());
+					 * model.addAttribute("Emailid", employee.getEmailId());
+					 * model.addAttribute("Image", employee.getImage());
+					 * model.addAttribute("Mobileno", employee.getMobileNo());
+					 * model.addAttribute("Count",employee.getCount());
+					 */
 
-//						session.setAttribute("DateofBirth",
-//								employee.getDateOfBirth());
-//						session.setAttribute("DateofRegistration",
-//								employee.getDateOfRegistration());
-//						session.setAttribute("Userid", employee.getUserId());
-//						session.setAttribute("Username", employee.getUserName());
-//						session.setAttribute("Emailid", employee.getEmailId());
-//						session.setAttribute("Image", employee.getImage());
-//						session.setAttribute("Mobileno", employee.getMobileNo());
-//						session.setAttribute("Company", employee.getCompany());
-//						session.setAttribute("Count", employee.getCount());
-//						session.setAttribute("Password", employee.getPassword());
+					session.setAttribute("EmployeeDob",employee.getEmployeeDob());
+					session.setAttribute("EmployeeDoj",employee.getEmployeeDoj());
+					session.setAttribute("EmployeeId", employee.getEmployeeId());
+					session.setAttribute("EmployeeName", employee.getEmployeeName());
+					session.setAttribute("EmailId", employee.getEmailId());
+					session.setAttribute("MobileNo", employee.getMobileNo());
+					session.setAttribute("CompanyName", employee.getCompanyName());
+					session.setAttribute("Team", employee.getTeam());
+					session.setAttribute("role", employee.getRole());
+					
+					pm.makePersistent(employee);
 
-						//pm.makePersistent(employee);
-						
-						System.out.println("Welcome to user Login");
-					}
 				}
-			} catch (Exception e) {
-				return "LoginFailed";
-
-			} finally {
-				pm.close();
 			}
-			return "Index";
+		} catch (Exception e) {
+			
+			 return "LoginFailed";
 
-		
+		} finally {
+			pm.close();
+		}
+		return "UserProfile";
 	}
 
 }

@@ -6,10 +6,8 @@
 <link type="text/css" rel="stylesheet" href="/Css/stylesheet.css" />
 <title>Welcome Page</title>
 <%
-	if (session.getAttribute("Username") == null
-			|| session.getAttribute("Username") == "") {
-		
-	} else {
+	if (session.getAttribute("EmployeeName") != null
+			|| session.getAttribute("EmployeeName") != "") {	
 		response.setHeader("Cache-Control",
 				"no-cache, no-store, must-revalidate");
 		response.setHeader("Pragma", "no-cache");
@@ -32,7 +30,7 @@
 
 		</div>
 		<%
-			if (session.getAttribute("Username") == null) {
+			if (session.getAttribute("EmployeeName") == null) {
 		%>
 		<div class="Menu">
 
@@ -41,15 +39,9 @@
 		</div>
 		<% }else{%>
 		<div class="Menu" style="width: 200px;">
-			<a href="UserProfile.com"><%=session.getAttribute("Username")%></a>
+			<a href="UserProfile.com"><%=session.getAttribute("EmployeeName")%></a>
 		</div>
-		<%
-			if (session.getAttribute("Count") != null) {
-		%>
-		<div class="Menu" style="width: 50px;">
-			<%=session.getAttribute("Count")%>
-		</div>
-		<%} %>
+
 		<div class="Menu">
 			<a href="Logout.com">Logout</a>
 		</div>
@@ -67,11 +59,14 @@
 	<div class="break"></div>
 
 	<div class="design">
-		<br><p> <span	style="font-size: 30px; color: maroon;">Welcome to Adaptavant
-			Techologies</span></p> 
-			<div class="design1">
-		
-			<img style="height: 180px; width: 250px ;margin-left:100px;margin-top:100px"
+		<br>
+		<p>
+			<span style="font-size: 30px; color: maroon;">Welcome to
+				Adaptavant Techologies</span>
+		</p>
+		<div class="design1">
+			<img
+				style="height: 180px; width: 250px; margin-left: 100px; margin-top: 100px"
 				src="/Images/AdaptavantTechnologies.jpg" />
 		</div>
 	</div>
