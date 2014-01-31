@@ -55,6 +55,13 @@
 			<a href="Logout.com">Logout</a>
 		</div>
 		<%
+			if (session.getAttribute("role") == "teamleader") {
+		%>
+		<div class="Menu">
+			<a href="ViewStatus.com">Logout</a>
+		</div>
+		<%
+			}
 			}
 		%>
 
@@ -77,7 +84,9 @@
 				<div class="designtable"
 					style="margin-top: 10px; text-align: center; color: #eb0684; margin-left: 35px;"><%=session.getAttribute("EmployeeName")%></div>
 				<table style="margin-top: 10px; margin-left: 10px;">
-					<%if(session.getAttribute("EmployeeDob")!=null){ %><tr>
+					<%
+						if (session.getAttribute("EmployeeDob") != null) {
+					%><tr>
 						<td>
 							<h4>DateofBirth</h4>
 						</td>
@@ -85,7 +94,10 @@
 								:
 								<%=session.getAttribute("EmployeeDob")%></h4></td>
 					</tr>
-					<%} if(session.getAttribute("EmployeeDoj")!=null){ %><tr>
+					<%
+						}
+						if (session.getAttribute("EmployeeDoj") != null) {
+					%><tr>
 						<td>
 							<h4>Company</h4>
 						</td>
@@ -93,7 +105,10 @@
 								:
 								<%=session.getAttribute("CompanyName")%></h4></td>
 					</tr>
-					<%} if(session.getAttribute("EmployeeId")!=null){ %>
+					<%
+						}
+						if (session.getAttribute("EmployeeId") != null) {
+					%>
 					<tr>
 						<td>
 							<h4>Userid</h4>
@@ -102,7 +117,10 @@
 								:
 								<%=session.getAttribute("EmployeeId")%></h4></td>
 					</tr>
-					<%} if(session.getAttribute("EmailId")!=null){ %>
+					<%
+						}
+						if (session.getAttribute("EmailId") != null) {
+					%>
 					<tr>
 						<td>
 							<h4>Emailid</h4>
@@ -110,7 +128,10 @@
 						<td><h4>
 								:<%=session.getAttribute("EmailId")%></h4></td>
 					</tr>
-					<%} if(session.getAttribute("MobileNo")!=null){ %>
+					<%
+						}
+						if (session.getAttribute("MobileNo") != null) {
+					%>
 					<tr>
 						<td>
 							<h4>Mobileno</h4>
@@ -118,11 +139,15 @@
 						<td><h4>
 								:<%=session.getAttribute("MobileNo")%></h4></td>
 					</tr>
-					<%}%>
+					<%
+						}
+					%>
 				</table>
 			</div>
 			<div class="button">
-				<%if (session.getAttribute("Count") != null) {%><table>
+				<%
+					if (session.getAttribute("Count") != null) {
+				%><table>
 					<tr>
 						<td><a href="Retrieve.htm"><input name="Update"
 								type="submit" value="Update"></a></td>
@@ -130,7 +155,9 @@
 								type="submit" value="Delete"></a></td>
 					</tr>
 				</table>
-				<%}%>
+				<%
+					}
+				%>
 			</div>
 		</div>
 	</div>

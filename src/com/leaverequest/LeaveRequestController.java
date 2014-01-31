@@ -25,18 +25,69 @@ import com.employeedetails.EmployeeBeanClass;
 
 @Controller
 public class LeaveRequestController {
-	private Logger log = Logger.getLogger(LeaveRequestBeanClass.class.getName());
+	private Logger log = Logger
+			.getLogger(LeaveRequestBeanClass.class.getName());
 
 	@RequestMapping(value = "Leave.com")
 	public String leaveRequest() {
 		return "LeaveRequestForm";
 
 	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/UpdateStatus.com")
+	public ModelAndView updateStatus(HttpServletRequest req, ModelAndView model) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		//LeaveRequestBeanClass leaveUpdate = new LeaveRequestBeanClass();
+		try {
+
+			// Get the values from the Jsp Form and set values into Datastore by
+			// using the employee Object.
+			String approvedDate = (String) req.getParameter("ApprovedDate");
+			String status = (String) req.getParameter("Status");
+			//String emailIdFrom = (String) req.getParameter("EmailId");
+			String team = req.getParameter("Team");
+			String nameOfApplicant = req.getParameter("NameOfApplicant");
+						
+			Query query = pm.newQuery(LeaveRequestBeanClass.class);
+			query.setFilter("team =='" + team + "' ");
+			List<LeaveRequestBeanClass> leaves = (List<LeaveRequestBeanClass>) query.execute();
+			
+			for (LeaveRequestBeanClass leave : leaves) {
+				if ((leave.getNameOfApplicant()).equalsIgnoreCase(nameOfApplicant)						
+						&& (leave.getTeam()).equals(team)) {
+
+					// session.setAttribute("TeamLeader",
+					// employee.getEmailId());
+					//String emailIdTo = ((EmployeeBeanClass) leaves).getEmailId();
+					leave.setApprovedDate(approvedDate);
+					leave.setStatus(status);
+
+				}
+			}
+			
+			model.addObject("Leave", leaves);
+			model.setViewName("ViewStatus");
+			//pm.makePersistent(leaveUpdate);
+
+	} catch (Exception e) {
+		log.warn("Wrong To address");
+	} finally {
+		// Close the PersistenceManager
+		pm.close();
+
+	}
+		
+		return model;
+
+	}
+	
+	
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/LeaveRequest.com")
-	public ModelAndView Register(HttpServletRequest req) throws ParseException,
-			UnsupportedEncodingException {
+	public ModelAndView Register(HttpServletRequest req, ModelAndView model)
+			throws ParseException, UnsupportedEncodingException {
 
 		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -60,12 +111,14 @@ public class LeaveRequestController {
 			String approvedDate = "Empty";
 			String status = "Pending";
 			String emailIdTo = null;
+			String message = req.getParameter("Message");
 
 			Query query = pm.newQuery(EmployeeBeanClass.class);
 			query.setFilter("team =='" + team + "' ");
 
 			List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query
 					.execute();
+
 			for (EmployeeBeanClass employee : employees) {
 				if ((employee.getEmployeeName()).equalsIgnoreCase(nameOfPoc)
 						&& employee.getRole().equalsIgnoreCase("TeamLeader")
@@ -74,7 +127,6 @@ public class LeaveRequestController {
 					// session.setAttribute("TeamLeader",
 					// employee.getEmailId());
 					emailIdTo = employee.getEmailId();
-					System.out.println(emailIdTo);
 
 				}
 			}
@@ -93,26 +145,29 @@ public class LeaveRequestController {
 			leaveRequest.setLeaveTo(leaveTo);
 			leaveRequest.setStatus(status);
 			// leaveRequest.setKey(key);
-			
-			System.out.println(emailIdTo+" message ");
-			String response="";
+
+			model.addObject("Employee", employees);
+			model.setViewName("UserProfile");
+
+			//System.out.println(emailIdTo + " message ");
+			String response = "";
 			if (emailIdTo != null && emailIdTo != "") {
-				System.out.println(" message True"+response);
-				response = sendMail(nameOfApplicant, emailIdFrom,
-						nameOfPoc, emailIdTo);
+				log.info(" message True" + response);
+				response = sendMail(nameOfApplicant, emailIdFrom, nameOfPoc,
+						emailIdTo, message);
 				log.info("Mail Send Successfully :" + response);
-				System.out.println(" welcome "+emailIdTo+" message "+response);
-			}
-			else{
-				System.out.println(" message false :"+response);
-				response="Failed";
-				log.info("Mail Not Send....,Receipent MailId not Found or Null.....,"+response);
+				log.info(" welcome " + emailIdTo + " message " + response);
+			} else {
+				log.info(" message false :" + response);
+				response = "Failed";
+				log.info("Mail Not Send....,Receipent MailId not Found or Null.....,"
+						+ response);
 			}
 			pm.makePersistent(leaveRequest);
 
-		} catch(Exception e){
-			System.out.println(" message error ");			
-		}finally {
+		} catch (Exception e) {
+			log.warn("Wrong To address");
+		} finally {
 			// Close the PersistenceManager
 			pm.close();
 
@@ -120,16 +175,16 @@ public class LeaveRequestController {
 
 		// Return the results to the Userprofile page by using the model and
 		// view
-		return new ModelAndView("UserProfile");
+		return model;
 	}
 
 	private String sendMail(String nameOfApplicant, String emailIdFrom,
-			String nameOfPoc, String emailIdTo)
+			String nameOfPoc, String emailIdTo, String message)
 			throws UnsupportedEncodingException {
-		System.out.println(" message test");
+		
+		log.info(" message test");
 		Properties props = new Properties();
 		Session session = Session.getDefaultInstance(props, null);
-		String msgBody = "You Got a Mail ";
 
 		try {
 
@@ -139,17 +194,17 @@ public class LeaveRequestController {
 			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(
 					emailIdTo, nameOfPoc));
 			msg.setSubject("Leave Request");
-			msg.setText(msgBody);
+			msg.setText(message);
 			Transport.send(msg);
-			
-			System.out.println("Ok tested Good ");
+
+			log.info("Ok tested Good ");
 			// MimeMessage message = new MimeMessage(session,
 			// req.getInputStream());
 		} catch (AddressException e1) {
-			System.out.println("Address Mismatch ");
+			log.info("Address Mismatch ");
 			log.info("AddressNotFound :" + e1);
 		} catch (MessagingException e) {
-			System.out.println("Message Mismatch ");
+			log.info("Message Mismatch ");
 			log.info("Messaging :" + e);
 		}
 		return "Success";
