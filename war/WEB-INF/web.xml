@@ -24,10 +24,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 
 
 	<security-constraint>
-		<web-resource-collection>
+		<!-- <web-resource-collection>
 			<web-resource-name>bounce</web-resource-name>
 			<url-pattern>/_ah/bounce</url-pattern>
-		</web-resource-collection>
+		</web-resource-collection> -->
+		
 		<web-resource-collection>
 			<web-resource-name>mail</web-resource-name>
 			<url-pattern>/_ah/mail/*</url-pattern>

@@ -3,6 +3,7 @@ package com.employeedetails;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
+
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.leaverequest.PMF;
+import com.instanceclass.PMF;
 
 @Controller
 public class EmployeeController {
@@ -63,7 +64,8 @@ public class EmployeeController {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 
 		// Create the Object for EmployeeBeanClass
-		EmployeeBeanClass employee = new EmployeeBeanClass();
+		EmployeeBeanClass employee = EmployeeBeanClass.getInstance();
+		
 
 		try {
 

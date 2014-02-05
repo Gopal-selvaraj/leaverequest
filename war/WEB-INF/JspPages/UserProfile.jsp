@@ -54,14 +54,18 @@
 		<div class="Menu">
 			<a href="Logout.com">Logout</a>
 		</div>
-		<%
-			if (session.getAttribute("role") == "teamleader") {
-		%>
+		
+		 <%
+		String role=(String)session.getAttribute("role");
+			if (role.equalsIgnoreCase("teamleader")) {
+			System.out.println(role);
+		%> 
 		<div class="Menu">
-			<a href="ViewStatus.com">Logout</a>
+			<a href="ViewStatus.com">ViewStatus</a>
 		</div>
 		<%
-			}
+			 }
+		
 			}
 		%>
 

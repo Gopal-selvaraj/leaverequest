@@ -1,4 +1,4 @@
-package com.leaverequest;
+package com.instanceclass;
 
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManagerFactory;

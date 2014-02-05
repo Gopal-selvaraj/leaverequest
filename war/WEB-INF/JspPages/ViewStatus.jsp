@@ -1,5 +1,6 @@
 <%@page pageEncoding="Cp1252" contentType="text/html; charset=Cp1252"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,6 +18,136 @@
 
 	}
 %>
+<script type="text/javascript">
+	/* /* /* /* /* function get(){
+	 var row=document.getElementsByTagName('TR');
+	 alert(row.length-1);
+	 for(var i=1;i<=row.length-1;i++){
+	 if(row[i])
+	 }
+	 }
+	 function checkAll() {		
+	 var count = 0;
+	
+	 var check = document.getElementById("checkall").checked;
+	 if (check) {			
+	 document.getElementById('check[1]').checked = true;
+	 Check();
+	 } else {
+	 document.getElementById('status[1]').selectedIndex = 0;
+	 document.getElementById('status[1]').disabled = true;
+	 document.getElementById('update[1]').disabled=true;
+	 document.getElementById('check[1]').checked = false;
+	 }
+	 } */
+	//var one=document.getElementById('status').selectedIndex;
+	//alert(one); */ */ */ */
+	function Check() {
+
+		/* var today=new Date();
+		var day=today.getDate();
+		var month=today.getMonth()+1;
+		var year=today.getFullYear();
+		var todayDate=year+"-"+month+"-"+day; */
+		var row = document.getElementsByTagName('TR').length;
+
+		for (var count = 1; count < row; count++) {
+
+			var status = "status" + count;
+			var update = "update" + count;
+			var check = "check" + count;
+			var deleteId = "del" + count;
+			var approvedDate = "approvedDate" + count;
+			var tableId = "tableView";
+			var checked = document.getElementById(check).checked;
+
+			if (checked) {
+				document.getElementById(status).selectedIndex = 1;
+				document.getElementById(update).disabled = false;
+				document.getElementById(status).disabled = false;
+				document.getElementById(deleteId).disabled = false;
+				document.getElementById(approvedDate).disabled = false
+				//var del=deleteRow(tableId);
+				//alert(del);
+				/*  document.getElementById(approvedDate).value=todayDate;*/
+
+			} else {
+				document.getElementById(status).selectedIndex = 0;
+				document.getElementById(status).disabled = true;
+				document.getElementById(update).disabled = true;
+				document.getElementById(deleteId).disabled = true;
+				document.getElementById(approvedDate).disabled = true;
+			}
+		}
+	}
+	/* 	  function update(){
+	 var request;
+	 function updateCalled() {
+	
+	 var employeeName=encodeURIComponent(document.getElementById("employeeName").value);
+	 var emailId=encodeURIComponent(document.getElementById("emailId").value);
+	 var approvedDate=encodeURIComponent(document.getElementById("approvedDate").value);
+	 var appliedDate=encodeURIComponent(document.getElementById("appliedDate").value);
+	 var emailIdTo = encodeURIComponent(document.getElementById("emailIdTo").value);
+	 var status	=encodeURIComponent(document.getElementById("status").value);
+	 var team=${LeaveList.team};
+	 var parameters="employeeName="+employeeName+"&emailId="+emailId+"&approvedDate="+approvedDate+"&appliedDate="+appliedDate+
+	 "&emailIdTo="+emailIdTo+"&status="+status;
+	
+	 //var url = "/updateServlet";
+	
+	 if (window.XMLHttpRequest) {
+	 request = new XMLHttpRequest();
+	 } else if (window.ActiveXObject) {
+	 request = new ActiveXObject("MicroSoft.XMLHTTP");
+	 }
+	 try {
+	 request.onreadystatechange = retrieveData;
+	 request.open("POST", '/updateStatus' , true);
+	 request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	 request.send(parameters);
+	 } catch (e) {
+	 alert("Unable to connect server");
+	 }
+	 }
+	 function retrieveData() {
+	 if (request.readyState == 4 && request.status == 200) {
+	 //	var JSONObject = JSON.parse(request.responseText);
+	 alert("Mail Sent Successfully");
+	 //document.getElementById("form1").innerHTML = val;
+	 /* document.getElementById("userName").value =JSONObject.userName ;
+	 document.getElementById("userId").value=JSONObject.userId ;
+	 document.getElementById("dateOfBirth").value = JSONObject.dateOfBirth;
+	 document.getElementById("dateOfRegistration").value =JSONObject.dateOfRegistration ;
+	 document.getElementById("companyName").value =JSONObject.companyName ;
+	 document.getElementById("emailId").value =JSONObject.emailId ;
+	 document.getElementById("mobileNo").value = JSONObject.mobileNo;
+	 document.getElementById("password").value = JSONObject.password; */
+
+	//	}
+	//	}
+	//} 
+	function deleteRow(tableID) {
+		try {
+			var table = document.getElementById(tableID);
+			var rowCount = table.rows.length;
+
+			for (var i = 0; i < rowCount; i++) {
+				var row = table.rows[i];
+				var chkbox = row.cells[0].childNodes[0];
+				if (null != chkbox && true == chkbox.checked) {
+					table.deleteRow(i);
+					rowCount--;
+					i--;
+				}
+
+			}
+		} catch (e) {
+			alert(e);
+		}
+		//return "Deleted"
+	}
+</script>
 </head>
 <body bgcolor="Teal">
 	<div id="header">
@@ -48,6 +179,7 @@
 		<div class="Menu">
 			<a href="Logout.com">Logout</a>
 		</div>
+
 		<%
 			}
 		%>
@@ -62,56 +194,63 @@
 	<div class="break"></div>
 
 	<form method="post" action="/UpdateStatus.com">
-		<div class="design">
-			<p>
-				<br> <span>LeaveRequest Form</span>
-			</p>
 
-			<div class="design1">
-				<table style="margin-left: 125px; margin-top: 85px">
+		<div style="height: 500px; margin-top: 100px;">
+			<!--${fn:length(Leave)}   -->
+			<br />
+			<table border="1"
+				style="margin-top: 20px; margin-left: 80px; text-align: left; padding: 5px; border-spacing: 5px"
+				id="tableView">
+
+				<tr>
+					<th>App/Dec</th>
+					<th>ApprovedBy</th>
+					<th>NameOfApplicant</th>
+					<th>Team</th>
+					<th>Role</th>
+					<th>LeaveFrom</th>
+					<th>LeaveTo</th>
+					<th>AppliedDate</th>
+					<th>ApprovedDate</th>
+					<th>Status</th>
+					<th>Update</th>
+				</tr>
+				<%
+					int count = 0;
+				%>
+				<c:forEach items="${Leave}" var="LeaveList">
+
+					<%
+						count = count + 1;
+					%>
 					<tr>
-						<td>EmployeeName</td><td>Role</td><td>Team</td><td>EmailId</td><td>LeaveFrom</td><td>LeaveTo</td>
-						<td>RequestDate</td><td>SendTo</td></tr>
-						<c:forEach items="${Employee}" var="empLeaveList">
-						<tr>
-						<td>:<input maxlength="30" size="25" type="text" id="employeeName"
-							value="${empLeaveList.employeeName}" disabled></td>
-					
-						
-						<td>:<input type="text" name="Role" id="role"							
-							value="${empLeaveList.role}" disabled></td>
-					
-											
-						<td>:<input maxlength="30" value="${empLeaveList.team}" name="Team" size="25"
-							type="text" id="team" disabled></td>
-						
-						<td>:<input maxlength="30" name="EmailId" size="25" type="email" id="emailId"
-							value="${empLeaveList.emailId}" disabled></td>
-						
-						<td>:<input maxlength="10" name="LeaveFrom" size="25" type="date" id="leaveFrom" value="${empLeaveList.leaveFrom}"
-							disabled></td>
-						
-						<td>:<input maxlength="10" name="LeaveTo" size="25" type="date" value="${empLeaveList.leaveTo}" id="leaveTo"
-							disabled></td>
-						<td>:<input maxlength="30" value="${empLeaveList.requestDate}"	name="RequestDate" 
-						size="25" type="date" id="requestDate" disabled></td>
+						<td><input name="checkbox" type="checkbox"
+							id="check<%=count%>" onclick="Check()"></td>
 
-						<td>:<input maxlength="10"
-							value="${empLeaveList.approvedBy}" name="ApprovedBy" size="25" type="text" id="approvedBy" disabled></td>
-					<td>:<input maxlength="10"
-							value="${empLeaveList.status}" name="Status" size="25" type="text" id="status" disabled></td>
-					
-					</tr>
-					</c:forEach>
-
-				</table>
-				<table style="margin-left: 220px; margin-top: 15px">
-					<tr>
-						<td><input name="Update" type="submit" id="update" value="Update"></td>
-					</tr>
-				</table>
-			</div>
+						<td>${LeaveList.nameOfPoc}</td>
+						<td>${LeaveList.nameOfApplicant}</td>
+						<td>${LeaveList.team}</td>
+						<td>${LeaveList.role}</td>
+						<td>${LeaveList.leaveFrom}</td>
+						<td>${LeaveList.leaveTo}</td>
+						<td>${LeaveList.appliedDate}</td>
+						<td><input style="width: 130px" type="date"
+							value="${LeaveList.approvedDate}" id="approvedDate<%=count%>"
+							disabled></td>
+						<td><select name="status" id="status<%=count%>" disabled>
+								<option>Pending</option>
+								<option>Approved</option>
+								<option>Declined</option>
+						</select></td>
+						<td><input type="button" name="Update" value="Update"
+							id="update<%=count%>" onclick="update()" disabled /></td>
+						 <td><input type="button" name="Delete" value="Delete"
+							id="del<%=count%>" onclick="deleteRow('tableView')" disabled /></td>
+					</tr> 
+				</c:forEach>
+			</table>
 		</div>
+
 	</form>
 
 </body>

@@ -25,7 +25,7 @@ public class EmployeeBeanClass {
 	private String employeeDob;
 	private String employeeDoj;
 	private String companyName;
-	
+
 	public Key getKey() {
 		return key;
 	}
@@ -102,8 +102,6 @@ public class EmployeeBeanClass {
 		return mobileNo;
 	}
 
-	
-
 	public void setMobileNo(String mobileNo) {
 		this.mobileNo = mobileNo;
 	}
@@ -122,6 +120,20 @@ public class EmployeeBeanClass {
 
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
+	}
+
+	private volatile static EmployeeBeanClass instance = null;
+
+	public static EmployeeBeanClass getInstance() {
+
+		if (instance == null) {
+
+			instance = new EmployeeBeanClass();
+
+		}
+
+		return instance;
+
 	}
 
 }

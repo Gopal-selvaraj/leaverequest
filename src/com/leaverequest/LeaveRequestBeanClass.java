@@ -8,28 +8,28 @@ import javax.jdo.annotations.PersistenceCapable;
 
 @PersistenceCapable
 public class LeaveRequestBeanClass {
-	
-//	@PrimaryKey
-//    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-//	private Key key;
+
+	// @PrimaryKey
+	// @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	// private Key key;
 	private String nameOfApplicant;
 	private String team;
 	private String role;
 	private String nameOfPoc;
-	//private String request;
+	// private String request;
 	private String status;
 	private String leaveFrom;
 	private String leaveTo;
 	private String appliedDate;
 	private String approvedDate;
 
-//	public Key getKey() {
-//		return key;
-//	}
-//
-//	public void setKey(Key key) {
-//		this.key = key;
-//	}
+	// public Key getKey() {
+	// return key;
+	// }
+	//
+	// public void setKey(Key key) {
+	// this.key = key;
+	// }
 
 	public String getNameOfApplicant() {
 		return nameOfApplicant;
@@ -63,13 +63,13 @@ public class LeaveRequestBeanClass {
 		this.nameOfPoc = nameOfPoc;
 	}
 
-//	public String getRequest() {
-//		return request;
-//	}
-//
-//	public void setRequest(String request) {
-//		this.request = request;
-//	}
+	// public String getRequest() {
+	// return request;
+	// }
+	//
+	// public void setRequest(String request) {
+	// this.request = request;
+	// }
 
 	public String getStatus() {
 		return status;
@@ -109,6 +109,20 @@ public class LeaveRequestBeanClass {
 
 	public void setApprovedDate(String approvedDate) {
 		this.approvedDate = approvedDate;
+	}
+
+	private volatile static LeaveRequestBeanClass instance = null;
+
+	public static LeaveRequestBeanClass getInstance() {
+
+		if (instance == null) {
+
+			instance = new LeaveRequestBeanClass();
+
+		}
+
+		return instance;
+
 	}
 
 }
