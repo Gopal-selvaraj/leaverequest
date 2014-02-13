@@ -3,6 +3,7 @@ package com.employeedetails;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.UUID;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
@@ -14,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.instanceclass.PMF;
 
 @Controller
@@ -24,6 +23,11 @@ public class EmployeeController {
 	@RequestMapping(value = "Index.com")
 	public String Index() {
 		return "Index";
+	}
+	
+	@RequestMapping(value = "loginTemplate.com")
+	public String loginTemplate() {
+		return "LoginTemplate";
 	}
 
 	@RequestMapping(value = "Registration.com")
@@ -53,7 +57,6 @@ public class EmployeeController {
 
 		HttpSession session = req.getSession();
 		session.invalidate();
-
 		return "Logout";
 	}
 
@@ -90,14 +93,13 @@ public class EmployeeController {
 			employee.setTeam(team);
 			employee.setRole(role);
 			employee.setAddress(address);
-			employee.setEmailId(emailId);
+			employee.setEmployeeEmailId(emailId);
 			employee.setMobileNo(mobileNo);
 			employee.setPassword(password);
 			employee.setEmployeeId(employeeId);
-
-			Key key = KeyFactory.createKey(
-					EmployeeBeanClass.class.getSimpleName(), emailId);
-			employee.setKey(key);
+			UUID id=UUID.randomUUID();
+			employee.setKey(id.toString());
+			
 			pm.makePersistent(employee);
 
 		} finally {
@@ -111,7 +113,7 @@ public class EmployeeController {
 		return new ModelAndView("RegisteredSuccessfully");
 	}
 
-	@SuppressWarnings("unchecked")
+
 	@RequestMapping(value = "/Loginauth.com", method = RequestMethod.POST)
 	public String userInfo(HttpServletRequest req) throws IOException {
 
@@ -126,13 +128,14 @@ public class EmployeeController {
 			// Query filter is used to filter the particular field with
 			// value
 			Query query = pm.newQuery(EmployeeBeanClass.class);
-			query.setFilter("emailId =='" + emailId + "' ");
+			query.setFilter("employeeEmailId =='" + emailId + "' ");
 			
 			// using the List to get the entries from the data store
 			
+			@SuppressWarnings("unchecked")
 			List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query.execute();
 			for (EmployeeBeanClass employee : employees) {
-				if ((employee.getEmailId()).equals(emailId)
+				if ((employee.getEmployeeEmailId()).equals(emailId)
 						&& (employee.getPassword()).equals(password)) {
 					
 					HttpSession session = req.getSession();
@@ -155,7 +158,7 @@ public class EmployeeController {
 					session.setAttribute("EmployeeDoj",employee.getEmployeeDoj());
 					session.setAttribute("EmployeeId", employee.getEmployeeId());
 					session.setAttribute("EmployeeName", employee.getEmployeeName());
-					session.setAttribute("EmailId", employee.getEmailId());
+					session.setAttribute("EmailId", employee.getEmployeeEmailId());
 					session.setAttribute("MobileNo", employee.getMobileNo());
 					session.setAttribute("CompanyName", employee.getCompanyName());
 					session.setAttribute("Team", employee.getTeam());

@@ -1,36 +1,31 @@
 package com.employeedetails;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
-
-import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
 public class EmployeeBeanClass {
 
+	
 	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Key key;
-
+	private String employeeEmailId;
+	private String key;
 	private String employeeName;
 	private String employeeId;
 	private String address;
 	private String team;
 	private String role;
-	private String emailId;
 	private String password;
 	private String mobileNo;
 	private String employeeDob;
 	private String employeeDoj;
 	private String companyName;
 
-	public Key getKey() {
+	public String getKey() {
 		return key;
 	}
 
-	public void setKey(Key key) {
+	public void setKey(String key) {
 		this.key = key;
 	}
 
@@ -58,12 +53,12 @@ public class EmployeeBeanClass {
 		this.team = team;
 	}
 
-	public String getEmailId() {
-		return emailId;
+	public String getEmployeeEmailId() {
+		return employeeEmailId;
 	}
 
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
+	public void setEmployeeEmailId(String employeeEmailId) {
+		this.employeeEmailId = employeeEmailId;
 	}
 
 	public String getPassword() {

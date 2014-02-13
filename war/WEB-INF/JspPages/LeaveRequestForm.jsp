@@ -113,7 +113,7 @@
 					</tr>
 					<tr>
 						<td>SendTo</td>
-						<td>:<input maxlength="10" placeholder="TeamLeadername"
+						<td>:<input maxlength="25" placeholder="TeamLeadername"
 							value="" name="SendTo" size="25" type="text" id="SendTo" required></td>
 					</tr>
 

@@ -56,12 +56,13 @@
 		</div>
 		
 		 <%
-		String role=(String)session.getAttribute("role");
-			if (role.equalsIgnoreCase("teamleader")) {
-			System.out.println(role);
+			String role=(String)session.getAttribute("role");
+		 	String value=(String)session.getAttribute("value");
+			if (role.equalsIgnoreCase("teamleader")&& value!="0") {
+
 		%> 
 		<div class="Menu">
-			<a href="ViewStatus.com">ViewStatus</a>
+			<a href="/ViewStatus.com">ViewStatus</a>
 		</div>
 		<%
 			 }

@@ -1,35 +1,39 @@
 package com.leaverequest;
 
-//import javax.jdo.annotations.IdGeneratorStrategy;
-//import javax.jdo.annotations.Persistent;
-//import javax.jdo.annotations.PrimaryKey;
-//import com.google.appengine.api.datastore.Key;
 import javax.jdo.annotations.PersistenceCapable;
+
 
 @PersistenceCapable
 public class LeaveRequestBeanClass {
 
-	// @PrimaryKey
-	// @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	// private Key key;
+	
+	private String key;
+	private String employeeEmailId;
 	private String nameOfApplicant;
 	private String team;
 	private String role;
 	private String nameOfPoc;
-	// private String request;
 	private String status;
 	private String leaveFrom;
 	private String leaveTo;
 	private String appliedDate;
 	private String approvedDate;
 
-	// public Key getKey() {
-	// return key;
-	// }
-	//
-	// public void setKey(Key key) {
-	// this.key = key;
-	// }
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getEmployeeEmailId() {
+		return employeeEmailId;
+	}
+
+	public void setEmployeeEmailId(String employeeEmailId) {
+		this.employeeEmailId = employeeEmailId;
+	}
 
 	public String getNameOfApplicant() {
 		return nameOfApplicant;
@@ -62,14 +66,6 @@ public class LeaveRequestBeanClass {
 	public void setNameOfPoc(String nameOfPoc) {
 		this.nameOfPoc = nameOfPoc;
 	}
-
-	// public String getRequest() {
-	// return request;
-	// }
-	//
-	// public void setRequest(String request) {
-	// this.request = request;
-	// }
 
 	public String getStatus() {
 		return status;
@@ -111,18 +107,16 @@ public class LeaveRequestBeanClass {
 		this.approvedDate = approvedDate;
 	}
 
+	// Singleton Object for the LeaveRequestBeanClass
+
 	private volatile static LeaveRequestBeanClass instance = null;
 
 	public static LeaveRequestBeanClass getInstance() {
 
 		if (instance == null) {
-
 			instance = new LeaveRequestBeanClass();
-
 		}
-
 		return instance;
-
 	}
 
 }
