@@ -21,8 +21,6 @@
 
 
 	function clickme(id) {
-		//alert(id);
-		
 		var row = document.getElementsByTagName('TR').length;
 		for (var j = 1; j <= row; j++) {
 			var status = 'status' + j;

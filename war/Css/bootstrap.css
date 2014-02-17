@@ -52,6 +52,9 @@ a:hover {
 abbr[title] {
   border-bottom: 1px dotted;
 }
+.bgimg {
+    background-image: url(/Images/AdaptBackground.png);
+}
 b,
 strong {
   font-weight: bold;
@@ -1977,7 +1980,7 @@ select[multiple].input-lg {
 }
 @media (min-width: 768px) {
   .form-horizontal .control-label {
-    text-align: right;
+    text-align: left;
   }
 }
 .form-horizontal .has-feedback .form-control-feedback {

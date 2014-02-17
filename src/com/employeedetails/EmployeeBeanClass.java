@@ -16,11 +16,9 @@ public class EmployeeBeanClass {
 	private String team;
 	private String role;
 	private String password;
-	private String mobileNo;
-	private String employeeDob;
+	private String mobileNo;	
 	private String employeeDoj;
-	private String companyName;
-
+	
 	public String getKey() {
 		return key;
 	}
@@ -69,13 +67,7 @@ public class EmployeeBeanClass {
 		this.password = password;
 	}
 
-	public String getEmployeeDob() {
-		return employeeDob;
-	}
-
-	public void setEmployeeDob(String employeeDob) {
-		this.employeeDob = employeeDob;
-	}
+	
 
 	public String getEmployeeDoj() {
 		return employeeDoj;
@@ -107,15 +99,7 @@ public class EmployeeBeanClass {
 
 	public void setRole(String role) {
 		this.role = role;
-	}
-
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
+	}	
 
 	private volatile static EmployeeBeanClass instance = null;
 
@@ -130,5 +114,7 @@ public class EmployeeBeanClass {
 		return instance;
 
 	}
+
+	
 
 }

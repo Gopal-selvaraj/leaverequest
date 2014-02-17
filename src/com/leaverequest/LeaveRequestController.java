@@ -35,20 +35,42 @@ public class LeaveRequestController {
 	private Logger log = Logger
 			.getLogger(LeaveRequestBeanClass.class.getName());
 
-	@RequestMapping(value = "Leave.com")
+	@RequestMapping(value = "/Leave.com")
 	public String leaveRequest() {
 		return "LeaveRequestForm";
 	}
 	
 	
-	@RequestMapping(value = "/LeaveHistory")
-	public String leaveHistory() {
-		return "LeaveHistory";
+	@SuppressWarnings({ "unchecked", "unused" })
+	@RequestMapping(value = "/LeaveHistory.com",method = RequestMethod.POST)
+	public ModelAndView leaveHistory(HttpServletRequest req, ModelAndView model) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		String emailId="";String team="";
+		emailId=req.getParameter("EmailId");
+		team=req.getParameter("Team");		
+		
+			Query history = pm.newQuery(LeaveRequestBeanClass.class, "team == '" + team + "' ");
+			List<LeaveRequestBeanClass> leavesTaken = (List<LeaveRequestBeanClass>) history
+					.execute();
+			model.addObject("LeavesTaken", leavesTaken);
+			for(LeaveRequestBeanClass lea:leavesTaken){
+				lea.getEmployeeEmailId();
+			}
+			//System.out.println("departments"+leavesTaken.size());
+			
+		
+		//System.out.println(leavesTaken.size());
+	//	model.addObject("LeavesTaken", leavesTaken);
+		
+		model.setViewName("LoginTemplate");
+		
+		return model;
+		
 	}
 	
 
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/ViewStatus.com")
+	@RequestMapping(value = "/ViewStatus.com",method = RequestMethod.POST)
 	public ModelAndView viewStatus(HttpServletRequest req, ModelAndView model) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		HttpSession session = req.getSession();
@@ -65,11 +87,11 @@ public class LeaveRequestController {
 		 * "lastName == 'Smith' || firstName == 'Harold'");
 		 */
 
-		Query query1 = pm.newQuery(LeaveRequestBeanClass.class, "(team == '"
+		Query pending = pm.newQuery(LeaveRequestBeanClass.class, "(team == '"
 				+ team + "' )" + "&& status == '" + status + "' ");
 		// query1.setFilter("team =='" + team + "' ");
 
-		List<LeaveRequestBeanClass> leaveApproval = (List<LeaveRequestBeanClass>) query1
+		List<LeaveRequestBeanClass> pendingLeaves = (List<LeaveRequestBeanClass>) pending
 				.execute();
 		
 		/*
@@ -84,8 +106,8 @@ public class LeaveRequestController {
 		 */
 	//	System.out.println(leaveApproval);
 		
-		model.addObject("Leave", leaveApproval);
-		model.setViewName("ViewStatus");
+		model.addObject("PendingLeaves", pendingLeaves);
+		model.setViewName("LoginTemplate");
 		return model;
 
 	}
@@ -145,7 +167,8 @@ public class LeaveRequestController {
 			// frontend pages ...
 
 			model.addObject("Leave", leaves);
-			model.setViewName("ViewStatus");
+			model.setViewName("LoginTemplate");
+			
 
 		} catch (Exception e) {
 			// In case of Not stored in datastore and email not send means the
@@ -162,8 +185,8 @@ public class LeaveRequestController {
 	}
 
 	
-	@RequestMapping(value = "/LeaveRequest.com")
-	public ModelAndView Register(HttpServletRequest req, ModelAndView model)
+	@RequestMapping(value = "/LeaveRequest.com",method = RequestMethod.POST)
+	public ModelAndView leaveRequest(HttpServletRequest req, ModelAndView model)
 			throws ParseException, UnsupportedEncodingException {
 
 		// Create the singleton Object for persistence manager Class
@@ -179,7 +202,7 @@ public class LeaveRequestController {
 			// Get the values from the Jsp Form and set values into Datastore by
 			// using the employee Object.
 			String nameOfApplicant = req.getParameter("EmployeeName");
-			String nameOfPoc = req.getParameter("SendTo");
+			String nameOfPoc = req.getParameter("NameOfPoc");
 			String appliedDate = req.getParameter("RequestDate");
 			String leaveFrom = req.getParameter("LeaveFrom");
 			String leaveTo = req.getParameter("LeaveTo");
@@ -205,6 +228,7 @@ public class LeaveRequestController {
 						&& employee.getRole().equalsIgnoreCase("TeamLeader")
 						&& (employee.getTeam().equals(team))) {
 					emailIdTo = employee.getEmployeeEmailId();
+					nameOfPoc = employee.getEmployeeName();
 				}
 
 			}
@@ -246,7 +270,7 @@ public class LeaveRequestController {
 						+ response);
 			}
 
-			model.setViewName("UserProfile");
+			model.setViewName("LoginTemplate");
 
 			pm.makePersistent(leaveRequest);
 

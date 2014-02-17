@@ -19,7 +19,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<url-pattern>/MailSend.com</url-pattern> </web-resource-collection> -->
 
 	<welcome-file-list>
-		<welcome-file>WEB-INF/JspPages/Front.jsp</welcome-file>
+		<welcome-file>WEB-INF/JspPages/HomeTemplate.jsp</welcome-file>
 	</welcome-file-list>
 
 
