@@ -14,6 +14,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>LeaveRequest</servlet-name>
 		
 		<url-pattern>/register</url-pattern>
+		<url-pattern>/registerPage</url-pattern>
 		<url-pattern>/registration</url-pattern>
 		<url-pattern>/login</url-pattern>
 		<url-pattern>/homePage</url-pattern>
@@ -26,6 +27,8 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<url-pattern>/updateLeaveStatus</url-pattern>
 		<url-pattern>/viewLeaveStatus</url-pattern>
 		<url-pattern>/leaveHistory</url-pattern>
+		<url-pattern>/updatePassword</url-pattern>
+		
 		
 	</servlet-mapping>
 

@@ -5,10 +5,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Cp1252" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="viewport"
-	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/bootstrap-responsive.css" rel="stylesheet">
@@ -30,21 +30,101 @@
 %>
 
 <script type="text/javascript">
-function searchEmployeeRecord(){
-	var searchEmailId=document.getElementById("searchEmailId").value;
-	
-	alert(searchEmailId);
-}
 
-
-function passwordCheck(){
-	
+function passwordCheck(){	
 	var password=document.getElementById("password").value;
 	var reTypePassword=document.getElementById("reTypePassword").value;
 	if(password!==reTypePassword){
 		alert("Password Mismatch please retype the password");
 	}
 }
+
+function passCheck(){
+	var password=document.getElementById("pass").value;
+	var reTypePassword=document.getElementById("rePass").value;
+	if(password!==reTypePassword){
+		alert("Password Mismatch please retype the password");
+	}
+}
+
+function updatePassword(){
+	var emailId="<%=session.getAttribute("EmailId")%>";
+	var password=document.getElementById("pass").value;
+	var parameters="EmailId="+emailId+"&Password="+password;
+	var url="/updatePassword";
+	var method="POST";	
+	alert(parameters);
+	var Pass=sendRequest(method,parameters, url);	
+	document.getElementById("updatePass").blur();
+}
+function addEmployee(){
+	var employeeName= document.getElementById("aemployeeName").value;
+	var employeeId = document.getElementById("aemployeeId").value;
+	var dateOfJoining = document.getElementById("adateOfJoining").value;
+	var emailId = document.getElementById("aemailId").value;
+	var address = document.getElementById("aaddress").value;
+	var role=document.getElementById("arole").value;
+	var mobileNo=document.getElementById("amobileNo").value;
+	var password=document.getElementById("apassword").value;
+	var teamName = document.getElementById("adepartment").selectedIndex;
+	var team = document.getElementById("adepartment")[teamName].text;	
+	var parameters="EmployeeName="+employeeName+"&EmployeeId="+employeeId+"&DateOfJoining="+dateOfJoining+"&EmailId="+emailId+
+	"&Address="+address+"&Department="+team+"&Role="+role+"&MobileNo="+mobileNo+"&Password="+password;
+	alert(parameters);
+	var url="/register";
+	var method="POST";
+	
+	var add=sendRequest(method,parameters, url);	
+	document.getElementById("register").blur();
+	alert("Employee Record Added");
+}
+function updateEmployee(){
+	var employeeName= document.getElementById("EmployeeName").value;
+	var employeeId = document.getElementById("EmployeeId").value;
+	var dateOfJoining = document.getElementById("DateOfJoining").value;
+	var emailId = document.getElementById("EmailId").value;
+	var address = document.getElementById("Address").value;
+	var role=document.getElementById("Role").value;
+	var mobileNo=document.getElementById("MobileNo").value;
+	var password=document.getElementById("Password").value;
+	var teamName = document.getElementById("Department").selectedIndex;
+	var team = document.getElementById("Department")[teamName].text;	
+	var parameters="EmployeeName="+employeeName+"&EmployeeId="+employeeId+"&DateOfJoining="+dateOfJoining+"&EmailId="+emailId+
+	"&Address="+address+"&Department="+team+"&Role="+role+"&MobileNo="+mobileNo+"&Password="+password;
+	alert(parameters);
+	var url="/register";
+	var method="POST";
+	
+	var update=sendRequest(method,parameters, url);	
+	document.getElementById("update").blur();
+	alert("Employee Record Added");
+}
+
+function searchEmployeeRecord(){
+	
+	var searchEmailId=document.getElementById("searchEmailId").value;
+	
+	var parameters="EmailId="+searchEmailId;	
+	var url="/searchEmployee?EmailId="+searchEmailId;
+	var method="GET";	
+	var searchEmployee=sendRequest(method,parameters,url);
+	document.getElementById("search").blur();
+}
+
+function deleteEmployeeRecord(){
+	
+	var searchEmailId=document.getElementById("searchEmailId").value;
+	
+	var parameters="EmailId="+searchEmailId;
+	
+	var url="/deleteEmployee?EmailId="+searchEmailId;
+	var method="GET";	
+	var deleteEmployee=sendRequest(method,parameters, url);	
+	document.getElementById("delete").blur();
+}
+
+
+
 function leaveHistory(){
 	
 	var teamName = document.getElementById("departments").selectedIndex;
@@ -168,22 +248,49 @@ function approvedStatus(id) {
 			request = new ActiveXObject("MicroSoft.XMLHTTP");
 		}
 		try {
-			request.onreadystatechange = getResponse();
+			
 			request.open(method, url, true);
 			request.setRequestHeader("Content-type",
 					"application/x-www-form-urlencoded");
 			request.send(parameters);
+			request.onreadystatechange=function()
+			  {
+			  if (request.readyState==4 && request.status==200)
+			    {
+				  var JSONObject = JSON.parse(request.responseText);			
+					document.getElementById("EmployeeName").value =JSONObject.employeeName ;
+					document.getElementById("EmployeeId").value=JSONObject.employeeId ;
+					//document.getElementById("Department").value=JSONObject.team ;
+					document.getElementById("Role").value=JSONObject.role ;
+					document.getElementById("Address").value=JSONObject.address ;
+					document.getElementById("DateOfJoining").value =JSONObject.dateOfJoining ;			
+					document.getElementById("EmailId").value =JSONObject.emailId ;
+					document.getElementById("MobileNo").value = JSONObject.mobileNo;
+					document.getElementById("Password").value = JSONObject.password; 
+			    }
+			}
 		} catch (e) {
 			alert("Unable to connect server");
 		}		
 		
 	}
 
-	function getResponse() {
+	/* function getResponse() {
 		if (request.readyState == 4 && request.status == 200) {
 			alert("Server Connected Successfully");
+			var JSONObject = JSON.parse(request.responseText);			
+			document.getElementById("EmployeeName").value =JSONObject.employeeName ;
+			document.getElementById("EmployeeId").value=JSONObject.employeeId ;
+			document.getElementById("Team").value=JSONObject.team ;
+			document.getElementById("Role").value=JSONObject.role ;
+			document.getElementById("Address").value=JSONObject.address ;
+			document.getElementById("DateOfJoining").value =JSONObject.dateOfJoining ;			
+			document.getElementById("EmailId").value =JSONObject.emailId ;
+			document.getElementById("MobileNo").value = JSONObject.mobileNo;
+			document.getElementById("Password").value = JSONObject.password; 
+			
 		}
-	}
+	} */
 	
 	
 </script>
@@ -395,21 +502,14 @@ function approvedStatus(id) {
 									<div class="tab-pane active" id="profileInformation">
 										<h3 align="center">Profile Information</h3>
 										<hr>
-										<form class="form-horizontal" role="form" action="/Update.com"
-											method="post" style="margin-left: 100px;">
-											<div class="form-group">
-												<label class="col-sm-2 control-label">MobileNo</label>
-												<div class="col-sm-4">
-													<input type="text" class="form-control" name="MobileNo"
-														placeholder="+919988001122"
-														value="<%=session.getAttribute("MobileNo")%>" />
-												</div>
-											</div>
+										<form class="form-horizontal" role="form" method="post" 
+										style="margin-left: 100px;">
+										<input type="hidden" id="updateProfilePassword" value="<%=session.getAttribute("EmailId")%>" >
 											<div class="form-group">
 												<label class="col-sm-2 control-label">Password</label>
 												<div class="col-sm-4">
 													<input type="password" class="form-control" name="Password"
-														placeholder="Password"
+														id="pass" placeholder="Password"
 														value="<%=session.getAttribute("Password")%>" />
 												</div>
 											</div>
@@ -418,14 +518,14 @@ function approvedStatus(id) {
 												<div class="col-sm-4">
 													<input type="password" class="form-control"
 														name="ReTypePassword" placeholder="Password"
-														value="<%=session.getAttribute("Password")%>"
-														onblur="passwordCheck()" />
+														id="rePass" value="<%=session.getAttribute("Password")%>"
+														onblur="passCheck()" />
 												</div>
 											</div>
 											<hr>
 											<div class="form-group">
 												<div class="col-sm-offset-3 col-sm-6">
-													<button type="submit" class="btn btn-default">Update</button>
+													<button type="button" id="updatePass" class="btn btn-default" onclick="updatePassword()">Update</button>
 													<button type="reset" class="btn btn-default">Reset</button>
 												</div>
 											</div>
@@ -769,21 +869,20 @@ function approvedStatus(id) {
 
 										<h3 align="center">Employee Form</h3>
 										<hr>
-										<form class="form-horizontal" role="form"
-											action="/registration" method="post"
+										<form class="form-horizontal" role="form" method="POST"
 											style="margin-left: 100px;">
 											<div class="form-group">
 												<label class="col-sm-2 control-label">EmployeeName</label>
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="Gopal123"
-														name="EmployeeName" type="text" id="employeeName" value=""
+														name="EmployeeName" type="text" id="aemployeeName" value=""
 														required>
 
 												</div>
 												<label class="col-sm-2 control-label">EmployeeId</label>
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="2013Adapt0003"
-														name="EmployeeId" type="text" id="employeeId" value=""
+														name="EmployeeId" type="text" id="aemployeeId" value=""
 														required>
 												</div>
 											</div>
@@ -793,11 +892,11 @@ function approvedStatus(id) {
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="MM/DD/YYYY"
 														name="DateOfJoining" type="date" value=""
-														id="dateOfJoining" required>
+														id="adateOfJoining" required>
 												</div>
 												<label class="col-sm-2 control-label">Address</label>
 												<div class="col-sm-4">
-													<textarea class="form-control" rows="3" id="address"
+													<textarea class="form-control" rows="3" id="aaddress"
 														name="Address" placeholder="Address"
 														style="resize: none; max-width: 300px; max-height: 100px;"></textarea>
 												</div>
@@ -805,13 +904,25 @@ function approvedStatus(id) {
 											<div class="form-group">
 												<label class="col-sm-2 control-label">Team</label>
 												<div class="col-sm-4">
-													<input class="form-control" placeholder="Development"
-														value="" name="Team" type="text" id="team" required>
+													<select class="form-control" id="adepartment">
+														<option>AccountManagement</option>
+														<option>BusinessSupport</option>
+														<option>ContentWriting</option>
+														<option>Designing</option>
+														<option>Developement</option>
+														<option>Financial</option>
+														<option>HumanResources</option>
+														<option>InformationTechnology</option>
+														<option>OpsTeam</option>
+														<option>Performance</option>
+														<option>QualityAssurance</option>
+														<option>Testing</option>
+													</select>
 												</div>
 												<label class="col-sm-2 control-label">Role</label>
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="SoftwareEngineer"
-														value="" name="Role" type="text" id="role" required>
+														value="" name="Role" type="text" id="arole" required>
 												</div>
 											</div>
 
@@ -819,12 +930,12 @@ function approvedStatus(id) {
 												<label class="col-sm-2 control-label">EmailId</label>
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="Gopal88@gmail.com"
-														name="EmailId" type="email" id="emailId" value="" required>
+														name="EmailId" type="email" id="aemailId" value="" required>
 												</div>
 												<label class="col-sm-2 control-label">MobileNo</label>
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="+919911223344"
-														name="MobileNo" type="text" id="mobileNo" value=""
+														name="MobileNo" type="text" id="amobileNo" value=""
 														required>
 												</div>
 											</div>
@@ -834,13 +945,13 @@ function approvedStatus(id) {
 												<div class="col-sm-4">
 													<input class="form-control" maxlength="10"
 														placeholder="Abc@123" value="" name="Password" size="20"
-														type="password" id="password" required>
+														type="password" id="apassword" required>
 												</div>
 												<label class="col-sm-2 control-label">ReTypePassword</label>
 												<div class="col-sm-4">
 													<input class="form-control" maxlength="10"
 														placeholder="Abc@123" value="" name="ReTypePassword"
-														size="20" type="password" id="reTypePassword"
+														size="20" type="password" id="areTypePassword"
 														onBlur="passwordCheck()" required>
 												</div>
 											</div>
@@ -848,8 +959,8 @@ function approvedStatus(id) {
 											<hr>
 											<div class="form-group">
 												<div class="col-sm-offset-4 col-sm-4">
-													<button type="submit" class="btn btn-default"
-														name="Registration" id="register">Register</button>
+													<button type="button" class="btn btn-default"
+														name="Registration" id="register" onclick="addEmployee()">Register</button>
 													<button type="reset" class="btn btn-default">Reset</button>
 												</div>
 											</div>
@@ -863,7 +974,7 @@ function approvedStatus(id) {
 									<div class="tab-pane fade " id="updateDelete">
 										<h3 align="center">Update/Delete Employee Record</h3>
 										<hr>
-										<form class="form-horizontal" role="form" method="post"
+										<form class="form-horizontal" role="form" method="GET"
 											style="margin-left: 100px">
 											<div class="form-group">
 												<label class="col-sm-1 control-label">Email</label>
@@ -872,34 +983,33 @@ function approvedStatus(id) {
 														placeholder="Email" />
 												</div>
 												<div class="col-sm-2">
-													<button type="button" class="btn btn-default" onclick="searchEmployeeRecord()">Search</button>
+													<button type="button" class="btn btn-default" id="search" onclick="searchEmployeeRecord()">Search</button>
 												</div>
 												<div class="col-sm-2">
 												<button type="button" class="btn btn-default" name="Delete"
-														 onclick="deleteEmployeeRecord()">Delete</button>
+														id="delete" onclick="deleteEmployeeRecord()">Delete</button>
 												</div>
 												<div class="col-sm-1">
 													<button type="reset" class="btn btn-default">Reset</button>
 												</div>
-												<label class="col-sm-1 control-label">${Delete}</label>
+												
 											</div>
 										</form>
-										<form class="form-horizontal" role="form"
-											action="/updateEmployeeStatus" method="post"
+										<form class="form-horizontal" role="form" method="POST"
 											style="margin-left: 100px">
 											<hr>
 											<div class="form-group">
 												<label class="col-sm-2 control-label">EmployeeName</label>
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="Gopal123"
-														name="EmployeeName" type="text" id="employeeName" value=""
+														name="EmployeeName" type="text" id="EmployeeName" value=""
 														required>
 
 												</div>
 												<label class="col-sm-2 control-label">EmployeeId</label>
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="2013Adapt0003"
-														name="EmployeeId" type="text" id="employeeId" value=""
+														name="EmployeeId" type="text" id="EmployeeId" value=""
 														required>
 												</div>
 											</div>
@@ -908,11 +1018,11 @@ function approvedStatus(id) {
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="MM/DD/YYYY"
 														name="DateOfJoining" type="date" value=""
-														id="dateOfJoining" required>
+														id="DateOfJoining" required>
 												</div>
 												<label class="col-sm-2 control-label">Address</label>
 												<div class="col-sm-4">
-													<textarea class="form-control" rows="3" id="address"
+													<textarea class="form-control" rows="3" id="Address"
 														name="Address" placeholder="Address"
 														style="resize: none; max-width: 300px; max-height: 100px;"></textarea>
 												</div>
@@ -920,13 +1030,25 @@ function approvedStatus(id) {
 											<div class="form-group">
 												<label class="col-sm-2 control-label">Team</label>
 												<div class="col-sm-4">
-													<input class="form-control" placeholder="Development"
-														value="" name="Team" type="text" id="team" required>
+													<select class="form-control" id="Department">
+														<option>AccountManagement</option>
+														<option>BusinessSupport</option>
+														<option>ContentWriting</option>
+														<option>Designing</option>
+														<option>Developement</option>
+														<option>Financial</option>
+														<option>HumanResources</option>
+														<option>InformationTechnology</option>
+														<option>OpsTeam</option>
+														<option>Performance</option>
+														<option>QualityAssurance</option>
+														<option>Testing</option>
+													</select>
 												</div>
 												<label class="col-sm-2 control-label">Role</label>
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="SoftwareEngineer"
-														value="" name="Role" type="text" id="role" required>
+														value="" name="Role" type="text" id="Role" required>
 												</div>
 											</div>
 
@@ -934,12 +1056,12 @@ function approvedStatus(id) {
 												<label class="col-sm-2 control-label">EmailId</label>
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="Gopal88@gmail.com"
-														name="EmailId" type="email" id="emailId" value="" required>
+														name="EmailId" type="email" id="EmailId" value="" required>
 												</div>
 												<label class="col-sm-2 control-label">MobileNo</label>
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="+919911223344"
-														name="MobileNo" type="text" id="mobileNo" value=""
+														name="MobileNo" type="text" id="MobileNo" value=""
 														required>
 												</div>
 											</div>
@@ -948,14 +1070,14 @@ function approvedStatus(id) {
 												<div class="col-sm-4">
 													<input class="form-control" maxlength="10"
 														placeholder="Abc@123" value="" name="Password" size="20"
-														type="password" id="password" required>
+														type="password" id="Password" required>
 												</div>
 											</div>
 											<hr>
 											<div class="form-group">
 												<div class="col-sm-offset-4 col-sm-5">
-													<button type="submit" class="btn btn-default" name="Update"
-														id="update">Update</button>													
+													<button type="button" class="btn btn-default" name="Update"
+														id="update" onclick="updateEmployee()">Update</button>													
 													<button type="reset" class="btn btn-default">Reset</button>
 												</div>
 											</div>

@@ -10,7 +10,7 @@
 <link href="css/bootstrap-responsive.css" rel="stylesheet">
 <script src="js/jquery.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<title>Home Page</title>
+<title>Registration Page</title>
 <%
 	if (session.getAttribute("EmployeeName") != null
 			|| session.getAttribute("EmployeeName") != "") {

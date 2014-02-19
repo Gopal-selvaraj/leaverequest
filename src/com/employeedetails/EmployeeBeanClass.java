@@ -9,6 +9,7 @@ public class EmployeeBeanClass {
 	
 	@PrimaryKey
 	private String employeeEmailId;
+	
 	private String key;
 	private String employeeName;
 	private String employeeId;
