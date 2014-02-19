@@ -35,14 +35,14 @@ public class LeaveRequestController {
 	private Logger log = Logger
 			.getLogger(LeaveRequestBeanClass.class.getName());
 
-	@RequestMapping(value = "/Leave.com")
+	@RequestMapping(value = "/leave")
 	public String leaveRequest() {
 		return "LeaveRequestForm";
 	}
 	
 	
 	@SuppressWarnings({ "unchecked", "unused" })
-	@RequestMapping(value = "/LeaveHistory.com",method = RequestMethod.POST)
+	@RequestMapping(value = "/leaveHistory",method = RequestMethod.POST)
 	public ModelAndView leaveHistory(HttpServletRequest req, ModelAndView model) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		String emailId="";String team="";
@@ -70,22 +70,12 @@ public class LeaveRequestController {
 	
 
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/ViewStatus.com",method = RequestMethod.POST)
+	@RequestMapping(value = "/viewLeaveStatus",method = RequestMethod.POST)
 	public ModelAndView viewStatus(HttpServletRequest req, ModelAndView model) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		HttpSession session = req.getSession();
 		String team = (String) session.getAttribute("Team");
 		String status = "Pending";
-
-		/*
-		 * Query q = pm.newQuery(Person.class,
-		 * "(lastName == 'Smith' || lastName == 'Jones')" +
-		 * " && firstName == 'Harold'");
-		 * 
-		 * //Not legal: filters separated by || are on different properties
-		 * Query q = pm.newQuery(Person.class,
-		 * "lastName == 'Smith' || firstName == 'Harold'");
-		 */
 
 		Query pending = pm.newQuery(LeaveRequestBeanClass.class, "(team == '"
 				+ team + "' )" + "&& status == '" + status + "' ");
@@ -94,18 +84,6 @@ public class LeaveRequestController {
 		List<LeaveRequestBeanClass> pendingLeaves = (List<LeaveRequestBeanClass>) pending
 				.execute();
 		
-		/*
-		 * for (LeaveRequestBeanClass leave : leaves) { if
-		 * ((leave.getTeam().equals(team) &&
-		 * (leave.getStatus().equalsIgnoreCase("Pending")))) {
-		 * 
-		 * List<LeaveRequestBeanClass> pending = (List<LeaveRequestBeanClass>)
-		 * query1 .execute(); model.addObject("Leave", leaves);
-		 * 
-		 * } }
-		 */
-	//	System.out.println(leaveApproval);
-		
 		model.addObject("PendingLeaves", pendingLeaves);
 		model.setViewName("LoginTemplate");
 		return model;
@@ -113,7 +91,7 @@ public class LeaveRequestController {
 	}
 
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/UpdateStatus.com", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateLeaveStatus", method = RequestMethod.POST)
 	public ModelAndView updateStatus(HttpServletRequest req, ModelAndView model) {
 		// LeaveRequestBeanClass lr = new LeaveRequestBeanClass();
 		PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -185,8 +163,8 @@ public class LeaveRequestController {
 	}
 
 	
-	@RequestMapping(value = "/LeaveRequest.com",method = RequestMethod.POST)
-	public ModelAndView leaveRequest(HttpServletRequest req, ModelAndView model)
+	@RequestMapping(value = "/leaveRequest", method = RequestMethod.POST)
+	public ModelAndView leaveRequest(HttpServletRequest req,ModelAndView model)
 			throws ParseException, UnsupportedEncodingException {
 
 		// Create the singleton Object for persistence manager Class
@@ -196,43 +174,60 @@ public class LeaveRequestController {
 		LeaveRequestBeanClass leaveRequest = LeaveRequestBeanClass
 				.getInstance();
 		// EmployeeBeanClass employee = new EmployeeBeanClass();
-
+		
 		try {
-
+			
 			// Get the values from the Jsp Form and set values into Datastore by
 			// using the employee Object.
-			String nameOfApplicant = req.getParameter("EmployeeName");
-			String nameOfPoc = req.getParameter("NameOfPoc");
+			String nameOfApplicant = req.getParameter("EmployeeName");	
+			
 			String appliedDate = req.getParameter("RequestDate");
+		
 			String leaveFrom = req.getParameter("LeaveFrom");
-			String leaveTo = req.getParameter("LeaveTo");
-			String team = req.getParameter("Team");
-			String emailIdFrom = req.getParameter("EmailId");
+			
+			String leaveTo = req.getParameter("LeaveTo");			
+			
+			String team = req.getParameter("Team");		
+			
 			String role = req.getParameter("Role");
-			String approvedDate = "null";
+			
+			String emailIdFrom = req.getParameter("EmailIdFrom");
+			
+			String emailIdTo = req.getParameter("EmailIdTo");
+			
+			String sickLeave=req.getParameter("SickLeave");
+			
+			String casualLeave=req.getParameter("CasualLeave");
+			
+			String privilegeLeave=req.getParameter("PrivilegeLeave");
+			
+			String otherLeave=req.getParameter("OtherLeave");
+			
+			String approvedDate ="";
+			String nameOfPoc = "";
 			String status = "Pending";
-			String emailIdTo = null;
-			// String message = req.getParameter("Message");
+			
+			
+			/*long leaveF=Long.parseLong(leaveFrom);
+			long leaveT=Long.parseLong(leaveTo);*/
+			
+			/*System.out.println(leaveF);
+			System.out.println(leaveT);*/
+			
 			String message = "Leave Request From " + nameOfApplicant + "\n"
 					+ "Date From " + leaveFrom + " To " + leaveTo;
 
 			Query query = pm.newQuery(EmployeeBeanClass.class);
-			query.setFilter("team =='" + team + "' ");
+			query.setFilter("employeeEmailId =='" + emailIdTo + "' ");
 
 			@SuppressWarnings("unchecked")
 			List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query
 					.execute();
 
-			for (EmployeeBeanClass employee : employees) {
-				if ((employee.getEmployeeName()).equalsIgnoreCase(nameOfPoc)
-						&& employee.getRole().equalsIgnoreCase("TeamLeader")
-						&& (employee.getTeam().equals(team))) {
-					emailIdTo = employee.getEmployeeEmailId();
-					nameOfPoc = employee.getEmployeeName();
-				}
-
-			}
-
+			EmployeeBeanClass employee = employees.get(0);
+				nameOfPoc = employee.getEmployeeName();
+		
+				
 			leaveRequest.setEmployeeEmailId(emailIdFrom);
 			leaveRequest.setNameOfApplicant(nameOfApplicant);
 			leaveRequest.setNameOfPoc(nameOfPoc);
@@ -243,6 +238,10 @@ public class LeaveRequestController {
 			leaveRequest.setLeaveFrom(leaveFrom);
 			leaveRequest.setLeaveTo(leaveTo);
 			leaveRequest.setStatus(status);
+			leaveRequest.setCasualLeave(casualLeave);
+			leaveRequest.setSickLeave(sickLeave);
+			leaveRequest.setPrivilegeLeave(privilegeLeave);
+			leaveRequest.setOtherLeave(otherLeave);
 			UUID key=UUID.randomUUID();
 			leaveRequest.setKey(key.toString());
 			
@@ -261,6 +260,7 @@ public class LeaveRequestController {
 						+ "\nAdmin will contact you shortly....";
 				sendMail(nameOfPoc, emailIdTo, nameOfApplicant, emailIdFrom,
 						responseMessage);
+				
 				// log.info("Mail Send Successfully :" + response);
 				// log.info(" welcome " + emailIdTo + " message " + response);
 			} else {
@@ -270,6 +270,7 @@ public class LeaveRequestController {
 						+ response);
 			}
 
+			model.addObject("Mail", "Your Mail was sent successfully");
 			model.setViewName("LoginTemplate");
 
 			pm.makePersistent(leaveRequest);
@@ -297,9 +298,10 @@ public class LeaveRequestController {
 		Properties props = new Properties();
 		Session session = Session.getDefaultInstance(props, null);
 		try {
+			
 			// HtmlEmail email = new HtmlEmail();
 			Message msg = new MimeMessage(session);
-
+		
 			msg.setFrom(new InternetAddress(emailIdFrom, nameOfApplicant));
 			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(
 					emailIdTo, nameOfPoc));

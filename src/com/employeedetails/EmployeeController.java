@@ -25,28 +25,28 @@ public class EmployeeController {
 	private Logger log = Logger
 			.getLogger(LeaveRequestBeanClass.class.getName());
 
-	@RequestMapping(value = "/HomePage.com")
+	@RequestMapping(value = "/homePage")
 	public String homePage() {
 		return "HomeTemplate";
 	}
 
-	@RequestMapping(value = "/LoginPage.com")
+	@RequestMapping(value = "/login")
 	public String loginPage() {
-		return "LoginTemplate";
+		return "LoginPage";
 	}
-	@RequestMapping(value = "/Register.com")
+	@RequestMapping(value = "/register")
 	public String register() {
 		return "Register";
 	}
 
-	@RequestMapping(value = "/Logout.com",method = RequestMethod.GET)
+	@RequestMapping(value = "/logout",method = RequestMethod.GET)
 	public ModelAndView logout(HttpServletRequest req) {
 		HttpSession session = req.getSession(true);
 		session.invalidate();
 		return new ModelAndView("HomeTemplate");
 	}
 	
-	@RequestMapping(value = "/deleteEmployee.com",method = RequestMethod.POST)
+	@RequestMapping(value = "/deleteEmployee",method = RequestMethod.POST)
 	public ModelAndView deletion(HttpServletRequest req, HttpServletResponse res,ModelAndView model)
 			throws ParseException {
 
@@ -67,7 +67,7 @@ public class EmployeeController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/searchEmployee.com",method = RequestMethod.POST)
+	@RequestMapping(value = "/searchEmployee",method = RequestMethod.POST)
 	public ModelAndView searching(HttpServletRequest req, HttpServletResponse res,ModelAndView model)
 			throws ParseException {
 
@@ -88,7 +88,7 @@ public class EmployeeController {
 	}
 	
 
-	@RequestMapping(value = "/Registration.com",method = RequestMethod.POST)
+	@RequestMapping(value = "/registration",method = RequestMethod.POST)
 	public ModelAndView registration(HttpServletRequest req, HttpServletResponse res)
 			throws ParseException {
 
@@ -148,7 +148,7 @@ public class EmployeeController {
 	}
 
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/Loginauth.com", method = RequestMethod.POST)
+	@RequestMapping(value = "/loginAuthentication", method = RequestMethod.POST)
 	public ModelAndView loginAuthentication(HttpServletRequest req,
 			HttpServletResponse res,ModelAndView model) throws IOException {
 
@@ -160,23 +160,6 @@ public class EmployeeController {
 		
 		// It is used to check the Login status
 		int loginState = 0;	
-	/*	if (emailId.equals("Administrator@123") && password.equals("Admin@123")) {
-			
-			System.out.println("yes but no Admin");
-			HttpSession session = req.getSession();
-			session.setAttribute("EmployeeName", "Administrator");
-			session.setAttribute("EmployeeId", "Admin123");
-			session.setAttribute("EmployeeDoj", "01-01-2014");
-			session.setAttribute("EmailId", "Adminisrator@123.com");
-			session.setAttribute("MobileNo", "+919988776655");
-			session.setAttribute("CompanyName",
-					"Adaptavant Technologies Pvt Ltd.");
-			session.setAttribute("Team", "HumanResources");
-			session.setAttribute("role", "Administrator");
-			loginState = 1;
-			System.out.println(emailId+"   state "+loginState);
-			}*/
-		
 		try {		
 			// Query filter is used to filter the particular field with
 			// value
@@ -188,9 +171,9 @@ public class EmployeeController {
 			
 			List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query
 					.execute();
-			for (EmployeeBeanClass employeeLogin : employees) {
-				if ((employeeLogin.getEmployeeEmailId()).equals(emailId)
-						&& (employeeLogin.getPassword()).equals(password)) {
+			EmployeeBeanClass employeeLogin = employees.get(0);
+			
+				if ((employeeLogin.getPassword()).equals(password)) {
 					
 					// Creating the session and setting the employee details
 					// into the session variables
@@ -208,39 +191,40 @@ public class EmployeeController {
 					session.setAttribute("Team", employeeLogin.getTeam());
 					session.setAttribute("role", employeeLogin.getRole());
 					
+					Query teamLeader = pm.newQuery(EmployeeBeanClass.class, "(team == '"
+							+ employeeLogin.getTeam() + "' )" + "&& role == 'TeamLeader' ");
+					List<EmployeeBeanClass> tlName = (List<EmployeeBeanClass>) teamLeader
+							.execute();
+					EmployeeBeanClass teamLead = tlName.get(0);
+					
+					session.setAttribute("TeamLead", teamLead.getEmployeeEmailId());
+					
 					loginState = 1;
-
+				
+				
 				} 			
-
-			}
+				else 
+					loginState = 0;
 			
 				String team = (String) session.getAttribute("Team");
 				String status = "Pending";
-
-				/*
-				 * Query q = pm.newQuery(Person.class,
-				 * "(lastName == 'Smith' || lastName == 'Jones')" +
-				 * " && firstName == 'Harold'");
-				 * 
-				 * //Not legal: filters separated by || are on different properties
-				 * Query q = pm.newQuery(Person.class,
-				 * "lastName == 'Smith' || firstName == 'Harold'");
-				 */
 
 				Query pending = pm.newQuery(LeaveRequestBeanClass.class, "(team == '"
 						+ team + "' )" + "&& status == '" + status + "' ");
 				// query1.setFilter("team =='" + team + "' ");				
 				List<LeaveRequestBeanClass> pendingLeaves = (List<LeaveRequestBeanClass>) pending
 						.execute();
-			
+				model.addObject("PendingLeaves", pendingLeaves);	
+				
 				Query history = pm.newQuery(LeaveRequestBeanClass.class, "employeeEmailId == '" + emailId + "' ");
 				List<LeaveRequestBeanClass> leavesTaken = (List<LeaveRequestBeanClass>) history
 						.execute();
-				
+							
 				model.addObject("LeavesTaken", leavesTaken);				
-				model.addObject("PendingLeaves", pendingLeaves);				
+							
 				model.setViewName("LoginTemplate");	
 
+		
 		} catch (Exception e) {
 			// Incase of any failure in try block Error information stored in logs
 			log.info("Login Failed Because of : " + e);
@@ -252,10 +236,10 @@ public class EmployeeController {
 		if (loginState == 1) {
 			return model;
 		} else {			
-			return new ModelAndView ("HomeTemplate","model","EmailId or Password Mismatch LoginFailed ");
+			return new ModelAndView ("LoginPage","model","EmailId or Password Mismatch LoginFailed");
 		}
 	}
-	@RequestMapping(value = "/UpdateEmployeeStatus.com", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateEmployee", method = RequestMethod.POST)
 	public ModelAndView updateEmployee(HttpServletRequest req,
 			HttpServletResponse res) throws IOException {
 		PersistenceManager pm = PMF.get().getPersistenceManager();

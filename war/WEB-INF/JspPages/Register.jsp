@@ -8,7 +8,7 @@
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/bootstrap-responsive.css" rel="stylesheet">
-<script src="http://code.jquery.com/jquery.js"></script>
+<script src="js/jquery.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <title>Home Page</title>
 <%
@@ -22,6 +22,11 @@
 
 	}
 %>
+
+<script type="text/javascript">
+	
+var request;
+</script>
 
 </head>
 <body>
@@ -57,98 +62,97 @@
 								<div class="span9"
 									style="align: center; margin-left: 175px; margin-top: 150px">
 									<h3 align="center">Employee Form</h3>
-										
-										<form class="form-horizontal" role="form"
-											action="/Registration.com" method="post"
-											style="margin-left: 100px;">
-											<hr><div class="form-group">
-												<label class="col-sm-2 control-label">EmployeeName</label>
-												<div class="col-sm-4">
-													<input class="form-control" placeholder="Gopal123"
-														name="EmployeeName" type="text" id="employeeName" value=""
-														required>
 
-												</div>
-												<label class="col-sm-2 control-label">EmployeeId</label>
-												<div class="col-sm-4">
-													<input class="form-control" placeholder="2013Adapt0003"
-														name="EmployeeId" type="text" id="employeeId" value=""
-														required>
-												</div>
+									<form class="form-horizontal" role="form" method="post"
+										action ="/registration" style="margin-left: 100px;">
+										<hr>
+										<div class="form-group">
+											<label class="col-sm-2 control-label">EmployeeName</label>
+											<div class="col-sm-4">
+												<input class="form-control" placeholder="Gopal123"
+													name="EmployeeName" type="text" id="employeeName" value=""
+													required>
+
 											</div>
-											<div class="form-group">
-												
+											<label class="col-sm-2 control-label">EmployeeId</label>
+											<div class="col-sm-4">
+												<input class="form-control" placeholder="2013Adapt0003"
+													name="EmployeeId" type="text" id="employeeId" value=""
+													required>
 											</div>
-											<div class="form-group">
-												<label class="col-sm-2 control-label">DateOfJoining</label>
-												<div class="col-sm-4">
-													<input class="form-control" placeholder="MM/DD/YYYY"
-														name="DateOfJoining" type="date" value=""
-														id="dateOfJoining" required>
-												</div>
-												<label class="col-sm-2 control-label">Address</label>
-												<div class="col-sm-4">
-													<textarea class="form-control" rows="3" id="address"
-														name="Address" placeholder="Address"
-														style="resize: none; max-width: 300px; max-height: 100px;"></textarea>
-												</div>
+										</div>
+										<div class="form-group"></div>
+										<div class="form-group">
+											<label class="col-sm-2 control-label">DateOfJoining</label>
+											<div class="col-sm-4">
+												<input class="form-control" placeholder="MM/DD/YYYY"
+													name="DateOfJoining" type="date" value=""
+													id="dateOfJoining" required>
 											</div>
-											<div class="form-group">
-												<label class="col-sm-2 control-label">Team</label>
-												<div class="col-sm-4">
-													<input class="form-control" placeholder="Development"
-														value="" name="Team" type="text" id="team" required>
-												</div>
-												<label class="col-sm-2 control-label">Role</label>
-												<div class="col-sm-4">
-													<input class="form-control" placeholder="SoftwareEngineer"
-														value="" name="Role" type="text" id="role" required>
-												</div>
+											<label class="col-sm-2 control-label">Address</label>
+											<div class="col-sm-4">
+												<textarea class="form-control" rows="3" id="address"
+													name="Address" placeholder="Address"
+													style="resize: none; max-width: 300px; max-height: 100px;"></textarea>
 											</div>
-											
-											<div class="form-group">
-												<label class="col-sm-2 control-label">EmailId</label>
-												<div class="col-sm-4">
-													<input class="form-control" placeholder="Gopal88@gmail.com"
-														name="EmailId" type="email" id="emailId" value="" required>
-												</div>
-												<label class="col-sm-2 control-label">MobileNo</label>
-												<div class="col-sm-4">
-													<input class="form-control" placeholder="+919911223344"
-														name="MobileNo" type="text" id="mobileNo" value=""
-														required>
-												</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-2 control-label">Team</label>
+											<div class="col-sm-4">
+												<input class="form-control" placeholder="Development"
+													value="" name="Team" type="text" id="team" required>
 											</div>
-											
-											<div class="form-group">
-												<label class="col-sm-2 control-label">Password</label>
-												<div class="col-sm-4">
-													<input class="form-control" maxlength="10"
-														placeholder="Abc@123" value="" name="Password" size="20"
-														type="password" id="password" required>
-												</div>
-												<label class="col-sm-2 control-label">ReTypePassword</label>
-												<div class="col-sm-4">
-													<input class="form-control" maxlength="10"
-														placeholder="Abc@123" value="" name="ReTypePassword"
-														size="20" type="password" id="reTypePassword"
-														onBlur="passwordCheck()" required>
-														<label class="col-sm-2 control-label">${model}</label>
-												</div>
+											<label class="col-sm-2 control-label">Role</label>
+											<div class="col-sm-4">
+												<input class="form-control" placeholder="SoftwareEngineer"
+													value="" name="Role" type="text" id="role" required>
 											</div>
-											
-											<hr><div class="form-group">
-												<div class="col-sm-offset-4 col-sm-4">
-													<button type="submit" class="btn btn-default"
-														name="Registration" >Register</button>
-													<button type="reset" class="btn btn-default">Reset</button>
-												</div>
-											</div><hr>
-										</form>
+										</div>
+
+										<div class="form-group">
+											<label class="col-sm-2 control-label">EmailId</label>
+											<div class="col-sm-4">
+												<input class="form-control" placeholder="Gopal88@gmail.com"
+													name="EmailId" type="email" id="emailId" value="" required>
+											</div>
+											<label class="col-sm-2 control-label">MobileNo</label>
+											<div class="col-sm-4">
+												<input class="form-control" placeholder="+919911223344"
+													name="MobileNo" type="text" id="mobileNo" value="" required>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label class="col-sm-2 control-label">Password</label>
+											<div class="col-sm-4">
+												<input class="form-control" maxlength="10"
+													placeholder="Abc@123" value="" name="Password" size="20"
+													type="password" id="password" required>
+											</div>
+											<label class="col-sm-2 control-label">ReTypePassword</label>
+											<div class="col-sm-4">
+												<input class="form-control" maxlength="10"
+													placeholder="Abc@123" value="" name="ReTypePassword"
+													size="20" type="password" id="reTypePassword"
+													onBlur="passwordCheck()" required> 
+											</div>
+											<label style="color:red;">${model}</label>
+										</div>
+
+										<hr>
+										<div class="form-group">
+											<div class="col-sm-offset-4 col-sm-4">
+												<button type="submit" class="btn btn-default"
+													name="Registration">Register</button>
+												<button type="reset" class="btn btn-default">Reset</button>
+											</div>
+										</div>
+										<hr>
+									</form>
 								</div>
 								<!--/.fluid-container-->
 							</div>
-							
+
 						</div>
 					</div>
 				</div>
@@ -166,8 +170,8 @@
 				</div>
 			</nav>
 		</div>
-</div>
+	</div>
 
-		
+
 </body>
 </html>

@@ -12,7 +12,7 @@
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/bootstrap-responsive.css" rel="stylesheet">
-<script src="http://code.jquery.com/jquery.js"></script>
+<script src="js/jquery.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <title>User Pages</title>
 <%
@@ -28,21 +28,14 @@
 
 	}
 %>
+
 <script type="text/javascript">
-
-function deleteEmployeeRecord(){
-	var delEmail=document.getElementById("searchEmailId").value;
-	var parameters="EmailId="+delEmail;
-	var url="/deleteEmployee.com";
-	var delEmployee = sendRequest(parameters,url);
-}
-
 function searchEmployeeRecord(){
-	var delEmail=document.getElementById("searchEmailId").value;
-	var parameters="EmailId="+delEmail;
-	var url="/searchEmployee.com";
-	var delEmployee = sendRequest(parameters,url);
+	var searchEmailId=document.getElementById("searchEmailId").value;
+	
+	alert(searchEmailId);
 }
+
 
 function passwordCheck(){
 	
@@ -61,44 +54,66 @@ function leaveHistory(){
 	var parameters="EmailId="+emailId+"&Team="+team;
 	
 	var url="/LeaveHistory.com";
+	var method="POST";
 	alert(parameters+ " " +url);
-	var history = sendRequest(parameters,url);
+	var history = sendRequest(method,parameters,url);
 	document.getElementById("leavesHistoryTable").style.display='block';
 	alert(document.getElementById("leavesHistoryTable").style.display);	
 
 }
 
-function sendEmail(){
-		
+function sendEmail(){		
 	var employeeName= document.getElementById("employeeName").value;
 	var emailIdFrom = document.getElementById("emailId").value;
-	var nameOfPoc = document.getElementById("nameOfPoc").value;
+	var emailIdTo = document.getElementById("emailIdTo").value;
 	var team = document.getElementById("team").value;	
 	var role=document.getElementById("role").value;
 	var requestDate = document.getElementById("requestDate").value;
 	var leaveTo = document.getElementById("leaveTo").value;
 	var leaveFrom = document.getElementById("leaveFrom").value;
-	var sickLeave=document.getElementById("sickLeave").checked;
-	var casualLeave=document.getElementById("casualLeave").checked;
-	var privilegeLeave=document.getElementById("privilegeLeave").checked;
-
-	var parameters = "NameOfPoc=" + nameOfPoc + "&EmailId="
-	+ emailIdFrom + "&EmployeeName=" + employeeName + "&Team="
-	+ team + "&Role=" + role + "&LeaveFrom=" + leaveFrom +"&LeaveTo="
-	+ leaveTo + "&RequestDate=" + requestDate + "&SickLeave=" + sickLeave+ "&CasualLeave=" + casualLeave+"&PrivilegeLeave=" + privilegeLeave;
 	
-	var url="/LeaveRequest.com";
+	if(document.getElementById("sickLeave").checked===true)
+	var sickLeave=1;
+	else sickLeave=0;
+	if(document.getElementById("casualLeave").checked===true)
+	var casualLeave=1;
+	else casualLeave=0;
+	if(document.getElementById("privilegeLeave").checked===true)
+	var privilegeLeave=1;
+	else privilegeLeave=0;
+	if(document.getElementById("otherLeave").checked===true)
+	var other=1;
+	else other=0;
+	alert(sickLeave+"  "+casualLeave+"  "+privilegeLeave+" "+other);
+	
+	
+	var parameters = "EmailIdFrom="	+ emailIdFrom +"&EmailIdTo=" + emailIdTo+
+	"&EmployeeName=" + employeeName + "&Team="	+ team + "&Role=" + role + 
+	"&LeaveFrom=" + leaveFrom +"&LeaveTo="	+ leaveTo + "&RequestDate=" + requestDate + 
+	"&SickLeave=" + sickLeave+ "&CasualLeave=" + casualLeave+"&PrivilegeLeave=" + privilegeLeave+"&OtherLeave="+other;
+	
+	var url="leaveRequest";
+	
+	var method="POST";
 	
 	//alert(parameters+" "+url);
 	var sendMail = confirm("Press ok to send Email and Send the Leave Request  else click cancel");
 	if (sendMail == true) {
-		var mail = sendRequest(parameters,url);
-		//alert(mail);
+		var mail = sendRequest(method,parameters,url);	
+		alert("Leave Request Send Successfully");
+		document.getElementById("leaveTo").value="";
+		document.getElementById("leaveFrom").value="";
+		document.getElementById("send").blur();
+		document.getElementById("sickLeave").checked=false;
+		document.getElementById("casualLeave").checked=false;
+		document.getElementById("privilegeLeave").checked=false;
+		
 
 	} else {
 		alert("Leave request was not send Please check and send");
 	}
-
+	
+	
 }
 
 function approvedStatus(id) {	
@@ -116,8 +131,7 @@ function approvedStatus(id) {
 				var key = document.getElementById(uuidKey).value;
 								
 				var approvedBy= "<%=session.getAttribute("EmployeeName")%>";
-				var emailIdFrom = "<%=session.getAttribute("EmailId")%>
-	";
+				var emailIdFrom = "<%=session.getAttribute("EmailId")%>";
 				var teamName = document.getElementById(team).innerHTML;
 				var employeeName = document.getElementById(nameOfApplicant).innerHTML;
 				var requestDate = document.getElementById(appliedDate).innerHTML;
@@ -130,24 +144,24 @@ function approvedStatus(id) {
 						+ "&status=" + updatedStatus + "&requestDate="
 						+ requestDate + "&key=" + key;
 
-				var url = "/UpdateStatus.com";
-
+				var url = "/updateLeaveStatus";
+				var method="POST";
 				//alert(parameters+" "+url);
 				var sendMail = confirm("Press ok to send Email and Update the Leave Request Status else click cancel");
 				if (sendMail == true) {
-					var mail = sendRequest(parameters, url);
+					var mail = sendRequest(method,parameters, url);
 					document.getElementById(id).disabled = true;
 
 				} else {
 					alert("Leave request was not updated Please click ok to send Email and Update");
 				}
-
+				
 			}
 		}
 	}
 
 	var request;
-	function sendRequest(parameters, url) {
+	function sendRequest(method,parameters, url) {
 		if (window.XMLHttpRequest) {
 			request = new XMLHttpRequest();
 		} else if (window.ActiveXObject) {
@@ -155,21 +169,23 @@ function approvedStatus(id) {
 		}
 		try {
 			request.onreadystatechange = getResponse();
-			request.open("POST", url, true);
+			request.open(method, url, true);
 			request.setRequestHeader("Content-type",
 					"application/x-www-form-urlencoded");
 			request.send(parameters);
 		} catch (e) {
 			alert("Unable to connect server");
-		}
-		return " ";
+		}		
+		
 	}
 
 	function getResponse() {
 		if (request.readyState == 4 && request.status == 200) {
-			alert(response);
+			alert("Server Connected Successfully");
 		}
 	}
+	
+	
 </script>
 <script type="text/javascript">
 	function showLeaveMenu() {
@@ -239,8 +255,7 @@ function approvedStatus(id) {
 							style="height: 50px;" /></a>
 					</div>
 
-					<div class="collapse navbar-collapse"
-						id="bs-example-navbar-collapse-1">
+					<div class="collapse navbar-collapse"	id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav navbar-right">
 							<li class="dropdown"><a href="#" class="dropdown-toggle"
 								data-toggle="dropdown"><%=session.getAttribute("EmployeeName")%><strong
@@ -250,7 +265,7 @@ function approvedStatus(id) {
 									<li><a href="#" onclick="showProfileInfo()">Profile</a></li>
 									<li><a href="#" onclick="showSettings()">Settings</a></li>
 									<li class="divider"></li>
-									<li><a href="/Logout.com">Logout</a></li>
+									<li><a href="/logout">Logout</a></li>
 								</ul></li>
 						</ul>
 					</div>
@@ -459,25 +474,25 @@ function approvedStatus(id) {
 												<tr>
 													<td>SickLeave</td>
 													<td>1</td>
-													<td>0</td>
+													<td><%=session.getAttribute("SickLeave") %></td>
 													<td>1</td>
 												</tr>
 												<tr>
 													<td>CasualLeave</td>
 													<td>1</td>
-													<td>0</td>
+													<td><%=session.getAttribute("CasualLeave") %></td>
 													<td>1</td>
 												</tr>
 												<tr>
 													<td>PrivilegeLeave</td>
 													<td>15</td>
-													<td>0</td>
+													<td><%=session.getAttribute("PrivilegeLeave") %></td>
 													<td>15</td>
 												</tr>
 												<tr>
 													<td>LossOfPay</td>
 													<td>0</td>
-													<td>0</td>
+													<td><%=session.getAttribute("OtherLeave") %></td>
 													<td>0</td>
 												</tr>
 											</table>
@@ -485,7 +500,7 @@ function approvedStatus(id) {
 									</div>
 									<!--  End of Leave Summary -->
 									<!-- Leave History -->
-									<div class="tab-pane fade " id="leaveHistory">
+									<div class="tab-pane fade " id="leaveHistory" >
 										<h3 align="center">Leave History</h3>
 
 										<form class="form-horizontal" role="form" method="post">
@@ -494,9 +509,9 @@ function approvedStatus(id) {
 														|| session.getAttribute("role").equals("Administrator")) {
 											%>
 											<hr>
-											<div class="form-group">
+											<div class="form-group" >
 												<label class="col-sm-2 control-label">Department</label>
-												<div class="col-sm-3">
+												<div class="col-sm-3" >
 													<select class="form-control" id="departments">
 														<option>AccountManagement</option>
 														<option>BusinessSupport</option>
@@ -513,7 +528,7 @@ function approvedStatus(id) {
 													</select>
 												</div>
 												<label class="col-sm-1 control-label">EmailId</label>
-												<div class="col-sm-4">
+												<div class="col-sm-4" >
 													<input type="text" class="form-control" name="EmailId"
 														id="email" placeholder="EmailId" />
 												</div>
@@ -530,9 +545,9 @@ function approvedStatus(id) {
 												}
 											%>
 
-											<div class="table-responsive" id="leavesHistoryTable">
+											<div class="table-responsive" id="leavesHistoryTable" >
 
-												<div class="form-group">
+												<div class="form-group" >
 													<table class="table ">
 														<tr>
 															<th>NameOfApplicant</th>
@@ -568,8 +583,7 @@ function approvedStatus(id) {
 
 										<h3 align="center">Leave Request Form</h3>
 										<hr>
-										<form class="form-horizontal" role="form" method="post"
-											style="margin-left: 100px;">
+										<form class="form-horizontal" role="form" method="post"	style=" margin-left: 100px;">
 
 											<div class="form-group">
 												<label class="col-sm-3 control-label">EmployeeName</label>
@@ -610,7 +624,7 @@ function approvedStatus(id) {
 												<label class="col-sm-3 control-label">LeaveFrom</label>
 												<div class="col-sm-4">
 													<input class="form-control" maxlength="10"
-														placeholder="MM/DD/YYYY" name="LeaveFrom" type="date"
+														placeholder="MM/dd/yyyy" name="LeaveFrom" type="date"
 														id="leaveFrom" value="" required>
 												</div>
 											</div>
@@ -618,7 +632,7 @@ function approvedStatus(id) {
 												<label class="col-sm-3 control-label">LeaveTo</label>
 												<div class="col-sm-4">
 													<input class="form-control" maxlength="10"
-														placeholder="MM/DD/YYYY" name="LeaveTo" type="date"
+														placeholder="MM/dd/yyyy" name="LeaveTo" type="date"
 														value="" id="leaveTo" required>
 												</div>
 											</div>
@@ -631,22 +645,21 @@ function approvedStatus(id) {
 																"MM/dd/yyyy");														
 													%>
 													<input class="form-control" maxlength="10"
-														placeholder="MM/DD/YYYY" value="<%=date.format(today)%>" name="RequestDate"
-														type="text" id="requestDate" required disabled>
+														placeholder="MM/dd/yyyy" value="<%=date.format(today)%>" name="RequestDate"
+														type="text" id="requestDate" required >
 												</div>
 											</div>
 											<div class="form-group">
-												<label class="col-sm-3 control-label">NameoftheTeamLeader</label>
+												<label class="col-sm-3 control-label">TeamLeadMailId</label>
 												<div class="col-sm-4">
 													<input class="form-control" maxlength="30"
-														placeholder="Selvaraj"
-														value="<%=session.getAttribute("TLEmailId")%>"
-														name="NameOfPoc" type="text" id="nameOfPoc" required>
+														value="<%=session.getAttribute("TeamLead")%>"
+														name="EmailIdTo" type="text" id="emailIdTo" required>
 												</div>
 											</div>
 											<div class="form-group">
 												<label class="col-sm-3 control-label">LeaveType</label>
-												<div class="col-sm-7">
+												<div class="col-sm-9">
 													<label class="checkbox-inline"> <input
 														type="checkbox" id="sickLeave" value="SickLeave">
 														SickLeave
@@ -657,7 +670,12 @@ function approvedStatus(id) {
 														type="checkbox" id="privilegeLeave" value="PrivilegeLeave">
 														PrivilegeLeave
 													</label>
+													<label class="checkbox-inline"> <input
+														type="checkbox" id="otherLeave" value="OtherLeave">
+														OtherLeave
+													</label>													
 												</div>
+												<label style="color:red;">${Mail}</label>												
 											</div>
 											<hr>
 											<div class="form-group">
@@ -676,8 +694,9 @@ function approvedStatus(id) {
 									<div class="tab-pane fade " id="pendingLeaveRequest">
 
 										<h3 align="center">Pending Leave Request</h3>
-										<hr>
-										<form class="form-horizontal" role="form" method="post">
+										
+										<form class="form-horizontal" role="form" method="get">
+											<hr>
 											<div class="table-responsive" id="pendingLeavesTable">
 
 												<div class="form-group">
@@ -732,7 +751,7 @@ function approvedStatus(id) {
 							</div>
 
 							<!-- End of Leave Information -->
-
+	
 							<!-- Employee Information -->
 							<div id="employeeInfo" style="display: none;">
 								<!-- Nav tabs -->
@@ -751,7 +770,7 @@ function approvedStatus(id) {
 										<h3 align="center">Employee Form</h3>
 										<hr>
 										<form class="form-horizontal" role="form"
-											action="/Registration.com" method="post"
+											action="/registration" method="post"
 											style="margin-left: 100px;">
 											<div class="form-group">
 												<label class="col-sm-2 control-label">EmployeeName</label>
@@ -866,7 +885,7 @@ function approvedStatus(id) {
 											</div>
 										</form>
 										<form class="form-horizontal" role="form"
-											action="/UpdateDeleteEmployeeStatus.com" method="post"
+											action="/updateEmployeeStatus" method="post"
 											style="margin-left: 100px">
 											<hr>
 											<div class="form-group">

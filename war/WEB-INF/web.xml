@@ -12,11 +12,22 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 
 	<servlet-mapping>
 		<servlet-name>LeaveRequest</servlet-name>
-		<url-pattern>*.com</url-pattern>
+		
+		<url-pattern>/register</url-pattern>
+		<url-pattern>/registration</url-pattern>
+		<url-pattern>/login</url-pattern>
+		<url-pattern>/homePage</url-pattern>
+		<url-pattern>/loginAuthentication</url-pattern>
+		<url-pattern>/logout</url-pattern>
+		<url-pattern>/searchEmployee</url-pattern>
+		<url-pattern>/deleteEmployee</url-pattern>
+		<url-pattern>/updateEmployee</url-pattern>
+		<url-pattern>/leaveRequest</url-pattern>
+		<url-pattern>/updateLeaveStatus</url-pattern>
+		<url-pattern>/viewLeaveStatus</url-pattern>
+		<url-pattern>/leaveHistory</url-pattern>
+		
 	</servlet-mapping>
-
-	<!-- <web-resource-collection> <web-resource-name>mail</web-resource-name> 
-		<url-pattern>/MailSend.com</url-pattern> </web-resource-collection> -->
 
 	<welcome-file-list>
 		<welcome-file>WEB-INF/JspPages/HomeTemplate.jsp</welcome-file>
@@ -24,11 +35,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 
 
 	<security-constraint>
-		<!-- <web-resource-collection>
-			<web-resource-name>bounce</web-resource-name>
-			<url-pattern>/_ah/bounce</url-pattern>
-		</web-resource-collection> -->
-		
+
 		<web-resource-collection>
 			<web-resource-name>mail</web-resource-name>
 			<url-pattern>/_ah/mail/*</url-pattern>

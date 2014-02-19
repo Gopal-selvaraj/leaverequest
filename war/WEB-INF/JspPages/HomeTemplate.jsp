@@ -8,7 +8,7 @@
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/bootstrap-responsive.css" rel="stylesheet">
-<script src="http://code.jquery.com/jquery.js"></script>
+<script src="js/jquery.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <title>Home Page</title>
 <%
@@ -22,37 +22,8 @@
 
 	}
 %>
-<script type="text/javascript">
-	var request;
-	function loginAuthentication() {
-		var emailId = document.getElementById("emailId").value;
-		var password = document.getElementById("password").value;
-		var parameters = "EmailId=" + emailId + "&Password=" + password;
-		if (window.XMLHttpRequest) {
-			request = new XMLHttpRequest();
-		} else if (window.ActiveXObject) {
-			request = new ActiveXObject("MicroSoft.XMLHTTP");
-		}
-		try {
-			request.onreadystatechange = retrieveData();
-			request.open("POST", '/LoginAuth.com', true);
-			request.setRequestHeader("Content-type",
-					"application/x-www-form-urlencoded");
-			request.send(parameters);
-		} catch (e) {
-			alert("Unable to connect server");
-		}
-	}
-
-	function retrieveData() {
-		if (request.readyState == 4 && request.status == 200) {
-			var Message = ${model};
-		}
-	}
-</script>
 </head>
 <body>
-
 	<div class="container">
 		<div class="row clearfix">
 			<div class="col-md-12 column">
@@ -73,6 +44,11 @@
 									src="/Images/AdaptLogo.png" alt=" " class="img-rounded"
 									style="height: 50px;" /></a>
 							</div>
+							<div class="collapse navbar-collapse" id="navbar">
+						<ul class="nav navbar-nav navbar-right">
+						<li><a href="/login">Login</a></li>														
+						</ul>
+					</div>
 						</nav>
 					</div>
 				</div>
@@ -82,7 +58,7 @@
 
 							<div class="col-md-10 column">
 								<div class="span9"
-									style="align: center; margin-left: 10px; margin-top: 150px">
+									style="align: center; margin-left: 175px; margin-top: 150px">
 									<div id="carousel-example-generic" class="carousel slide"
 										data-ride="carousel">
 										<!-- Indicators -->
@@ -167,50 +143,7 @@
 									</div>
 								</div>
 								<!--/.fluid-container-->
-							</div>
-							<!-- Column Left  -->
-							<div class="col-md-2 column">
-								<div class="span9"
-									style="align: center; margin-left: -120px; margin-top: 300px">
-									<div class="modal-body">
-										<form class="form-horizontal" role="form"
-											action="/Loginauth.com" method="post">
-											<div class="form-group">
-												<label class="col-sm-1 control-label">EmailId</label>
-												<div class="col-sm-4">
-													<input type="text" class="form-control" name="EmailId"
-														placeholder="EmailId" />
-												</div>
-											</div>
-											<div class="form-group">
-												<label class="col-sm-1 control-label">Password</label>
-												<div class="col-sm-4">
-													<input type="password" class="form-control" name="Password"
-														placeholder="Password" />
-												</div>
-											</div>
-											<div class="form-group">
-												<div class="col-sm-offset-1 col-sm-4">
-													<div class="checkbox">
-														<label><input type="checkbox" /> Remember me </label>
-													</div>
-													<label style="color:red;">${model}</label>
-												</div>
-											</div>
-											<div class="form-group">
-												<div class="col-sm-offset-1 col-sm-8">
-													<button type="submit" class="btn btn-default">Login</button>
-													<button type="reset" class="btn btn-default">Reset</button>
-												</div>
-											</div>
-										</form>
-									</div>
-
-								</div>
-
-
-							</div>
-							<!-- End of Column Left -->
+							</div>						
 						</div>
 					</div>
 				</div>
