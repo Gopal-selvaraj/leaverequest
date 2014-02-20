@@ -6,6 +6,38 @@ import javax.jdo.annotations.PersistenceCapable;
 @PersistenceCapable
 public class LeaveRequestBeanClass {
 
+	public String getSickLeaves() {
+		return sickLeaves;
+	}
+
+	public void setSickLeaves(String sickLeaves) {
+		this.sickLeaves = sickLeaves;
+	}
+
+	public String getCasualLeaves() {
+		return casualLeaves;
+	}
+
+	public void setCasualLeaves(String casualLeaves) {
+		this.casualLeaves = casualLeaves;
+	}
+
+	public String getPrivilegeLeaves() {
+		return privilegeLeaves;
+	}
+
+	public void setPrivilegeLeaves(String privilegeLeaves) {
+		this.privilegeLeaves = privilegeLeaves;
+	}
+
+	public String getOtherLeaves() {
+		return otherLeaves;
+	}
+
+	public void setOtherLeaves(String otherLeaves) {
+		this.otherLeaves = otherLeaves;
+	}
+
 	private String key;
 	private String employeeEmailId;
 	private String nameOfApplicant;
@@ -17,43 +49,11 @@ public class LeaveRequestBeanClass {
 	private String leaveTo;
 	private String appliedDate;
 	private String approvedDate;
-	private String sickLeave;
-	private String casualLeave;
-	private String privilegeLeave;
-	private String otherLeave;
+	private String sickLeaves;
+	private String casualLeaves;
+	private String privilegeLeaves;
+	private String otherLeaves;
 
-	
-	public String getSickLeave() {
-		return sickLeave;
-	}
-
-	public void setSickLeave(String sickLeave) {
-		this.sickLeave = sickLeave;
-	}
-
-	public String getCasualLeave() {
-		return casualLeave;
-	}
-
-	public void setCasualLeave(String casualLeave) {
-		this.casualLeave = casualLeave;
-	}
-
-	public String getPrivilegeLeave() {
-		return privilegeLeave;
-	}
-
-	public void setPrivilegeLeave(String privilegeLeave) {
-		this.privilegeLeave = privilegeLeave;
-	}
-
-	public String getOtherLeave() {
-		return otherLeave;
-	}
-
-	public void setOtherLeave(String otherLeave) {
-		this.otherLeave = otherLeave;
-	}
 	
 	public String getKey() {
 		return key;

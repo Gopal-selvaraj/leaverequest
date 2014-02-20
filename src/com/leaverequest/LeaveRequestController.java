@@ -18,6 +18,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -41,36 +42,50 @@ public class LeaveRequestController {
 	}
 	
 	
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({ "unchecked" })
 	@RequestMapping(value = "/leaveHistory",method = RequestMethod.POST)
-	public ModelAndView leaveHistory(HttpServletRequest req, ModelAndView model) {
+	public ModelAndView leaveHistory(HttpServletRequest req,HttpServletResponse res,ModelAndView model) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		String emailId="";String team="";
-		emailId=req.getParameter("EmailId");
-		team=req.getParameter("Team");		
-		
-			Query history = pm.newQuery(LeaveRequestBeanClass.class, "team == '" + team + "' ");
-			List<LeaveRequestBeanClass> leavesTaken = (List<LeaveRequestBeanClass>) history
-					.execute();
-			model.addObject("LeavesTaken", leavesTaken);
-			for(LeaveRequestBeanClass lea:leavesTaken){
-				lea.getEmployeeEmailId();
-			}
+		//String emailId="";
+		//String team="";
+		//emailId=req.getParameter("EmailId");
+		//team=req.getParameter("Team");			
+			Query history = pm.newQuery(LeaveRequestBeanClass.class);
+			List<LeaveRequestBeanClass> leavesTaken = (List<LeaveRequestBeanClass>) history.execute();
+			/*JSONObject jsonObject=new JSONObject();
+			JSONArray jsonArray=new JSONArray();
+			
+			for(LeaveRequestBeanClass leave:leavesTaken){
+				jsonObject.put("EmployeeName", leave.getNameOfApplicant());
+				jsonObject.put("LeaveFrom",leave.getLeaveFrom());
+				jsonObject.put("LeaveTo",leave.getLeaveTo());
+				jsonObject.put("AppliedDate", leave.getAppliedDate());
+				jsonObject.put("ApprovedDate", leave.getApprovedDate());
+				jsonObject.put("ApprovedBy", leave.getNameOfPoc());
+				jsonObject.put("Status", leave.getStatus());
+				jsonObject.put("ApprovedDate", leave.getCasualLeaves());				
+				jsonObject.put("OtherLeaves", leave.getOtherLeaves());
+				jsonObject.put("PrivilegeLeaves", leave.getPrivilegeLeaves());
+				jsonObject.put("SickLeaves", leave.getSickLeaves());
+				
+				jsonArray.add(jsonObject);				
+			}*/
 			//System.out.println("departments"+leavesTaken.size());
 			
 		
 		//System.out.println(leavesTaken.size());
-	//	model.addObject("LeavesTaken", leavesTaken);
+		model.addObject("LeavesTaken", leavesTaken);
 		
 		model.setViewName("LoginTemplate");
-		
+			/*res.setContentType("application/json");
+			return jsonArray.toString();*/
 		return model;
 		
 	}
 	
 
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/viewLeaveStatus",method = RequestMethod.POST)
+	@RequestMapping(value = "/pendingLeaveRequest",method = RequestMethod.POST)
 	public ModelAndView viewStatus(HttpServletRequest req, ModelAndView model) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		HttpSession session = req.getSession();
@@ -162,7 +177,7 @@ public class LeaveRequestController {
 
 	}
 
-	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/leaveRequest", method = RequestMethod.POST)
 	public ModelAndView leaveRequest(HttpServletRequest req,ModelAndView model)
 			throws ParseException, UnsupportedEncodingException {
@@ -179,35 +194,24 @@ public class LeaveRequestController {
 			
 			// Get the values from the Jsp Form and set values into Datastore by
 			// using the employee Object.
-			String nameOfApplicant = req.getParameter("EmployeeName");	
-			
-			String appliedDate = req.getParameter("RequestDate");
-		
-			String leaveFrom = req.getParameter("LeaveFrom");
-			
-			String leaveTo = req.getParameter("LeaveTo");			
-			
-			String team = req.getParameter("Team");		
-			
-			String role = req.getParameter("Role");
-			
-			String emailIdFrom = req.getParameter("EmailIdFrom");
-			
-			String emailIdTo = req.getParameter("EmailIdTo");
-			
-			String sickLeave=req.getParameter("SickLeave");
-			
-			String casualLeave=req.getParameter("CasualLeave");
-			
-			String privilegeLeave=req.getParameter("PrivilegeLeave");
-			
+			String nameOfApplicant = req.getParameter("EmployeeName");			
+			String appliedDate = req.getParameter("RequestDate");		
+			String leaveFrom = req.getParameter("LeaveFrom");			
+			String leaveTo = req.getParameter("LeaveTo");				
+			String team = req.getParameter("Team");					
+			String role = req.getParameter("Role");			
+			String emailIdFrom = req.getParameter("EmailIdFrom");			
+			String emailIdTo = req.getParameter("EmailIdTo");			
+			String sickLeave=req.getParameter("SickLeave");			
+			String casualLeave=req.getParameter("CasualLeave");			
+			String privilegeLeave=req.getParameter("PrivilegeLeave");			
 			String otherLeave=req.getParameter("OtherLeave");
 			
-			String approvedDate ="";
-			String nameOfPoc = "";
+			String approvedDate ="Not Assigned";
+			String nameOfPoc = "Not Approved";
 			String status = "Pending";
 			
-			
+			//System.out.println("i am in");
 			/*long leaveF=Long.parseLong(leaveFrom);
 			long leaveT=Long.parseLong(leaveTo);*/
 			
@@ -220,7 +224,7 @@ public class LeaveRequestController {
 			Query query = pm.newQuery(EmployeeBeanClass.class);
 			query.setFilter("employeeEmailId =='" + emailIdTo + "' ");
 
-			@SuppressWarnings("unchecked")
+			
 			List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query
 					.execute();
 
@@ -238,10 +242,10 @@ public class LeaveRequestController {
 			leaveRequest.setLeaveFrom(leaveFrom);
 			leaveRequest.setLeaveTo(leaveTo);
 			leaveRequest.setStatus(status);
-			leaveRequest.setCasualLeave(casualLeave);
-			leaveRequest.setSickLeave(sickLeave);
-			leaveRequest.setPrivilegeLeave(privilegeLeave);
-			leaveRequest.setOtherLeave(otherLeave);
+			leaveRequest.setCasualLeaves(casualLeave);
+			leaveRequest.setSickLeaves(sickLeave);
+			leaveRequest.setPrivilegeLeaves(privilegeLeave);
+			leaveRequest.setOtherLeaves(otherLeave);
 			UUID key=UUID.randomUUID();
 			leaveRequest.setKey(key.toString());
 			

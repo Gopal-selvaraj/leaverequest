@@ -1,37 +1,59 @@
 package com.leaverequest;
 
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.PrimaryKey;
+
+@PersistenceCapable
 public class LeaveType {
 
+	@PrimaryKey
 	private String key;
-	private int sickLeave;
-	private int casualLeave;
-	private int previleageLeave;
-	
+	private int sickLeaves;
+	private int casualLeaves;
+	private int previleageLeaves;
+	private int otherLeaves;
 	
 	public String getKey() {
 		return key;
 	}
+
 	public void setKey(String key) {
 		this.key = key;
 	}
-	public int getSickLeave() {
-		return sickLeave;
+
+	public int getSickLeaves() {
+		return sickLeaves;
 	}
-	public void setSickLeave(int sickLeave) {
-		this.sickLeave = sickLeave;
+
+	public void setSickLeaves(int sickLeaves) {
+		this.sickLeaves = sickLeaves;
 	}
-	public int getCasualLeave() {
-		return casualLeave;
+
+	public int getCasualLeaves() {
+		return casualLeaves;
 	}
-	public void setCasualLeave(int casualLeave) {
-		this.casualLeave = casualLeave;
+
+	public void setCasualLeaves(int casualLeaves) {
+		this.casualLeaves = casualLeaves;
 	}
-	public int getPrevileageLeave() {
-		return previleageLeave;
+
+	public int getPrevileageLeaves() {
+		return previleageLeaves;
 	}
-	public void setPrevileageLeave(int previleageLeave) {
-		this.previleageLeave = previleageLeave;
+
+	public void setPrevileageLeaves(int previleageLeaves) {
+		this.previleageLeaves = previleageLeaves;
 	}
+
+	public int getOtherLeaves() {
+		return otherLeaves;
+	}
+
+	public void setOtherLeaves(int otherLeaves) {
+		this.otherLeaves = otherLeaves;
+	}
+
+		
 	private volatile static LeaveType instance = null;
 
 	public static LeaveType getInstance() {
@@ -41,4 +63,5 @@ public class LeaveType {
 		}
 		return instance;
 	}
+	
 }

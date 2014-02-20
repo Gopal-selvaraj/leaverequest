@@ -26,26 +26,26 @@ import com.leaverequest.LeaveRequestBeanClass;
 public class EmployeeController {
 	private Logger log = Logger
 			.getLogger(LeaveRequestBeanClass.class.getName());
-	
+
 	@RequestMapping(value = "/registerPage")
 	public String register() {
 		return "Register";
 	}
-	
-	@RequestMapping(value = "/registration",method = RequestMethod.POST)
-	public ModelAndView registration(HttpServletRequest req, HttpServletResponse res)
-			throws ParseException {
+
+	@RequestMapping(value = "/registration", method = RequestMethod.POST)
+	public ModelAndView registration(HttpServletRequest req,
+			HttpServletResponse res) throws ParseException {
 
 		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 
 		// Create the Object for EmployeeBeanClass
 		EmployeeBeanClass employee = EmployeeBeanClass.getInstance();
-		//count the Registration 
-		String count=null;
+		// count the Registration
+		String count = null;
 		try {
 
-			count=employee.getKey();
+			count = employee.getKey();
 			// Get the values from the Jsp Form and set values into Datastore by
 			// using the employee Object.
 			String employeeName = req.getParameter("EmployeeName");
@@ -68,7 +68,7 @@ public class EmployeeController {
 			employee.setEmployeeEmailId(emailId);
 			employee.setMobileNo(mobileNo);
 			employee.setPassword(password);
-		
+
 			// Universal Unique Identifier to set the Key for each Employee
 			// Records
 			UUID id = UUID.randomUUID();
@@ -76,21 +76,22 @@ public class EmployeeController {
 
 			// Persist the Employee Object into DataStore
 			pm.makePersistent(employee);
-						
 
 		} catch (Exception e) {
-			// Incase of any failure in try block Error information stored in logs
+			// Incase of any failure in try block Error information stored in
+			// logs
 			log.info("Your Employee Record Not Registered Because of : " + e);
 		} finally {
 			// Close the Persistence Manager
 			pm.close();
 		}
-		if(count==null)
-			return new ModelAndView("Register","model","Registered Successfully");
-		else 
+		if (count == null)
+			return new ModelAndView("Register", "model",
+					"Registered Successfully");
+		else
 			return new ModelAndView("LoginTemplate");
 	}
-	
+
 	@RequestMapping(value = "/homePage")
 	public String homePage() {
 		return "HomeTemplate";
@@ -100,67 +101,62 @@ public class EmployeeController {
 	public String loginPage() {
 		return "LoginPage";
 	}
-	
 
-	
-	@RequestMapping(value = "/logout",method = RequestMethod.GET)
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public ModelAndView logout(HttpServletRequest req) {
 		HttpSession session = req.getSession(true);
 		session.invalidate();
 		return new ModelAndView("HomeTemplate");
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "unused" })
-	@RequestMapping(value = "/updatePassword",method = RequestMethod.POST)
-	public void update(HttpServletRequest req)
-			throws ParseException {
+	@RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
+	public void update(HttpServletRequest req) throws ParseException {
 		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		// Create the Object for EmployeeBeanClass
-		EmployeeBeanClass employee = EmployeeBeanClass.getInstance();		
-		String emailId=req.getParameter("EmailId");
-		String password=req.getParameter("Password");
-		String message="Employee Password was not Inserted";
-		
+		EmployeeBeanClass employee = EmployeeBeanClass.getInstance();
+		String emailId = req.getParameter("EmailId");
+		String password = req.getParameter("Password");
+		String message = "Employee Password was not Inserted";
+
 		Query query = pm.newQuery(EmployeeBeanClass.class);
 		query.setFilter("employeeEmailId =='" + emailId + "' ");
 		List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query
 				.execute();
 		EmployeeBeanClass emailUpdate = employees.get(0);
-			emailUpdate.setEmployeeEmailId(emailId);
-			emailUpdate.setPassword(password);
+		emailUpdate.setEmployeeEmailId(emailId);
+		emailUpdate.setPassword(password);
 		pm.makePersistent(emailUpdate);
-		
-		
+
 	}
-	
-	
+
 	@SuppressWarnings({ "unchecked", "unused" })
-	@RequestMapping(value = "/deleteEmployee",method = RequestMethod.GET)
-	public  void deletion(HttpServletRequest req)
-			throws ParseException {
+	@RequestMapping(value = "/deleteEmployee", method = RequestMethod.GET)
+	public void deletion(HttpServletRequest req) throws ParseException {
 		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 
 		// Create the Object for EmployeeBeanClass
 		EmployeeBeanClass employee = EmployeeBeanClass.getInstance();
-		
-		String emailId=req.getParameter("EmailId");
-		
-		String message="Employee Record was not Deleted";
-		
+
+		String emailId = req.getParameter("EmailId");
+
+		String message = "Employee Record was not Deleted";
+
 		Query query = pm.newQuery(EmployeeBeanClass.class);
 		query.setFilter("employeeEmailId =='" + emailId + "' ");
 		List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query
 				.execute();
 		EmployeeBeanClass emailDelete = employees.get(0);
-			pm.deletePersistent(emailDelete);		
-		pm.makePersistent(emailDelete);		
+		pm.deletePersistent(emailDelete);
+		pm.makePersistent(emailDelete);
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "unused" })
 	@RequestMapping(value = "/searchEmployee", method = RequestMethod.GET)
-	public @ResponseBody String searching(HttpServletRequest req, HttpServletResponse res)
+	public @ResponseBody
+	String searching(HttpServletRequest req, HttpServletResponse res)
 			throws ParseException, IOException {
 
 		// Create the singleton Object for persistence manager Class
@@ -168,18 +164,18 @@ public class EmployeeController {
 
 		// Create the Object for EmployeeBeanClass
 		EmployeeBeanClass employee = EmployeeBeanClass.getInstance();
-		
-		String emailId=req.getParameter("EmailId");
-		//System.out.println(emailId);
+
+		String emailId = req.getParameter("EmailId");
+		// System.out.println(emailId);
 		Query query = pm.newQuery(EmployeeBeanClass.class);
 		query.setFilter("employeeEmailId =='" + emailId + "' ");
 		List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query
 				.execute();
 		EmployeeBeanClass emailSearch = employees.get(0);
-		JSONObject empRecord=new JSONObject();
+		JSONObject empRecord = new JSONObject();
 
-		if(emailId.equals(emailSearch.getEmployeeEmailId())){					
-			//System.out.println("iam in ");
+		if (emailId.equals(emailSearch.getEmployeeEmailId())) {
+			// System.out.println("iam in ");
 			empRecord.put("employeeName", emailSearch.getEmployeeName());
 			empRecord.put("employeeId", emailSearch.getEmployeeId());
 			empRecord.put("address", emailSearch.getAddress());
@@ -187,20 +183,17 @@ public class EmployeeController {
 			empRecord.put("team", emailSearch.getTeam());
 			empRecord.put("role", emailSearch.getRole());
 			empRecord.put("password", emailSearch.getPassword());
-			empRecord.put("mobileNo", emailSearch.getMobileNo());			
-			//System.out.println(empRecord.toJSONString());
+			empRecord.put("mobileNo", emailSearch.getMobileNo());
+			// System.out.println(empRecord.toJSONString());
 			res.setContentType("application/json");
-			//res.encodeRedirectURL(empRecord.toJSONString());
-			
-		}
-		return empRecord.toJSONString();	
-		
-	}
-	
+			// res.encodeRedirectURL(empRecord.toJSONString());
 
-	
-	
-	@RequestMapping(value = "/register",method = RequestMethod.POST)
+		}
+		return empRecord.toJSONString();
+
+	}
+
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public void register(HttpServletRequest req, HttpServletResponse res)
 			throws ParseException {
 
@@ -209,8 +202,8 @@ public class EmployeeController {
 
 		// Create the Object for EmployeeBeanClass
 		EmployeeBeanClass employee = EmployeeBeanClass.getInstance();
-		
-		try {		
+
+		try {
 			// Get the values from the Jsp Form and set values into Datastore by
 			// using the employee Object.
 			String employeeName = req.getParameter("EmployeeName");
@@ -222,7 +215,7 @@ public class EmployeeController {
 			String emailId = req.getParameter("EmailId");
 			String mobileNo = req.getParameter("MobileNo");
 			String password = req.getParameter("Password");
-			
+
 			// Set the Employee records into employee Object
 			employee.setEmployeeName(employeeName);
 			employee.setEmployeeId(employeeId);
@@ -233,108 +226,105 @@ public class EmployeeController {
 			employee.setEmployeeEmailId(emailId);
 			employee.setMobileNo(mobileNo);
 			employee.setPassword(password);
-		
+
 			// Universal Unique Identifier to set the Key for each Employee
 			// Records
 			UUID id = UUID.randomUUID();
 			employee.setKey(id.toString());
-			
+
 			// Persist the Employee Object into DataStore
 			pm.makePersistent(employee);
-			
 
 		} catch (Exception e) {
-			// Incase of any failure in try block Error information stored in logs
+			// Incase of any failure in try block Error information stored in
+			// logs
 			log.info("Your Employee Record Not Registered Because of : " + e);
 		} finally {
 			// Close the Persistence Manager
 			pm.close();
-		}		
-				
+		}
+
 	}
-	
-	
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/loginAuthentication", method = RequestMethod.POST)
-	public ModelAndView loginAuthentication(HttpServletRequest req,
-			HttpServletResponse res,ModelAndView model) throws IOException {
-
+	public ModelAndView loginAuthentication(HttpServletRequest req,ModelAndView model) throws IOException {
+		// Create the Object for EmployeeBeanClass
+		//EmployeeBeanClass employee = EmployeeBeanClass.getInstance();
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		HttpSession session = req.getSession();
 		// Getting the input from the front end and assign into local variable..
 		String emailId = req.getParameter("EmailId");
 		String password = req.getParameter("Password");
-		
+
 		// It is used to check the Login status
-		int loginState = 0;	
-		try {		
+		int loginState = 0;
+		try {
 			// Query filter is used to filter the particular field with
 			// value
 			Query query = pm.newQuery(EmployeeBeanClass.class);
 			query.setFilter("employeeEmailId =='" + emailId + "' ");
 
 			// using the List to get the entries from the data store
-
-			
 			List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query
 					.execute();
 			EmployeeBeanClass employeeLogin = employees.get(0);
+		//	System.out.println("i am out "+employeeLogin.getPassword());
+		//	System.out.println(employeeLogin.getPassword());
 			
-				if ((employeeLogin.getPassword()).equals(password)) {
-					
-					// Creating the session and setting the employee details
-					// into the session variables
-					
-					session.setAttribute("EmployeeName",
-							employeeLogin.getEmployeeName());
-					session.setAttribute("EmployeeId", employeeLogin.getEmployeeId());
-					session.setAttribute("EmployeeDoj",
-							employeeLogin.getEmployeeDoj());
-					session.setAttribute("EmailId",
-							employeeLogin.getEmployeeEmailId());
-					session.setAttribute("MobileNo", employeeLogin.getMobileNo());
-					session.setAttribute("CompanyName",
-							"Adaptavant Technologies Pvt Ltd.");
-					session.setAttribute("Team", employeeLogin.getTeam());
-					session.setAttribute("role", employeeLogin.getRole());
-					
-					Query teamLeader = pm.newQuery(EmployeeBeanClass.class, "(team == '"
-							+ employeeLogin.getTeam() + "' )" + "&& role == 'TeamLeader' ");
-					List<EmployeeBeanClass> tlName = (List<EmployeeBeanClass>) teamLeader
-							.execute();
-					EmployeeBeanClass teamLead = tlName.get(0);
-					
-					session.setAttribute("TeamLead", teamLead.getEmployeeEmailId());
-					
-					loginState = 1;
+			if (employeeLogin.getPassword().equals(password)) {
 				
+			//	System.out.println("am in side "+employeeLogin.getPassword());
+				// Creating the session and setting the employee details
+				// into the session variables
 				
-				} 			
-				else 
-					loginState = 0;
-			
-				String team = (String) session.getAttribute("Team");
-				String status = "Pending";
+				session.setAttribute("EmployeeName",
+						employeeLogin.getEmployeeName());
+				session.setAttribute("EmployeeId",
+						employeeLogin.getEmployeeId());
+				session.setAttribute("EmployeeDoj",
+						employeeLogin.getEmployeeDoj());
+				session.setAttribute("EmailId",
+						employeeLogin.getEmployeeEmailId());
+				session.setAttribute("MobileNo", employeeLogin.getMobileNo());
+				session.setAttribute("CompanyName","Adaptavant Technologies Pvt Ltd.");
+				session.setAttribute("Team", employeeLogin.getTeam());
+				session.setAttribute("role", employeeLogin.getRole());
 
-				Query pending = pm.newQuery(LeaveRequestBeanClass.class, "(team == '"
-						+ team + "' )" + "&& status == '" + status + "' ");
-				// query1.setFilter("team =='" + team + "' ");				
-				List<LeaveRequestBeanClass> pendingLeaves = (List<LeaveRequestBeanClass>) pending
-						.execute();
-				model.addObject("PendingLeaves", pendingLeaves);	
-				
-				Query history = pm.newQuery(LeaveRequestBeanClass.class, "employeeEmailId == '" + emailId + "' ");
-				List<LeaveRequestBeanClass> leavesTaken = (List<LeaveRequestBeanClass>) history
-						.execute();
-							
-				model.addObject("LeavesTaken", leavesTaken);				
-							
-				model.setViewName("LoginTemplate");	
+				Query teamLeader = pm.newQuery(EmployeeBeanClass.class);
+				query.setFilter(" team == '" + employeeLogin.getTeam() + "' ");
+						
+				List<EmployeeBeanClass> tlName = (List<EmployeeBeanClass>) teamLeader.execute();
+				for(EmployeeBeanClass teamLead :tlName){
+					if(teamLead.getRole().equals("TeamLeader")){
+						session.setAttribute("TeamLead", teamLead.getEmployeeEmailId());
+				//		System.out.println("teamlead "+ teamLead);
+					}
+				}	
 
-		
+				loginState = 1;
+
+			} 			
+			  /*String team = (String) session.getAttribute("Team"); String
+			  status = "Pending";
+			  
+			  Query pending = pm.newQuery(LeaveRequestBeanClass.class);
+			  pending.setFilter( " team == '" + team + "' " + "&& status == '" + status + "' ");
+			  List<LeaveRequestBeanClass> pendingLeaves =  (List<LeaveRequestBeanClass>) pending .execute();
+			  model.addObject("PendingLeaves", pendingLeaves);
+			  
+			  Query history = pm.newQuery(LeaveRequestBeanClass.class);
+			  history.setFilter("employeeEmailId == '" + emailId + "' ");
+			  List<LeaveRequestBeanClass> leavesTaken =
+			  (List<LeaveRequestBeanClass>) history .execute();
+			  
+			  model.addObject("LeavesTaken", leavesTaken);*/			 
+
+			model.setViewName("LoginTemplate");
+
 		} catch (Exception e) {
-			// Incase of any failure in try block Error information stored in logs
+			// Incase of any failure in try block Error information stored in
+			// logs
 			log.info("Login Failed Because of : " + e);
 
 		} finally {
@@ -343,8 +333,10 @@ public class EmployeeController {
 		}
 		if (loginState == 1) {
 			return model;
-		} else {			
-			return new ModelAndView ("LoginPage","model","EmailId or Password Mismatch LoginFailed");
+
+		} else {
+			return new ModelAndView("LoginPage", "model",
+					"EmailId or Password Mismatch LoginFailed");
 		}
 	}
 }

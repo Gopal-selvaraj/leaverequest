@@ -1,14 +1,14 @@
 <%@page pageEncoding="Cp1252" contentType="text/html; charset=Cp1252"%>
-<%@ page import="java.io.*,java.util.*" %>
-<%@ page import="javax.servlet.*,java.text.*" %>
+<%@ page import="java.io.*,java.util.*"%>
+<%@ page import="javax.servlet.*,java.text.*"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Type" content="text/html; charset=Cp1252" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="viewport"
-	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/bootstrap-responsive.css" rel="stylesheet">
@@ -47,14 +47,32 @@ function passCheck(){
 	}
 }
 
+function searchEmployeeRecord(){
+	
+	var searchEmailId=document.getElementById("searchEmailId").value;
+	var url="/searchEmployee?EmailId="+searchEmailId;
+	var method="GET";	
+	var searchEmployee=sendGetRequest(method,url);
+	document.getElementById("search").blur();
+}
+
+function deleteEmployeeRecord(){
+	
+	var searchEmailId=document.getElementById("searchEmailId").value;
+	var url="/deleteEmployee?EmailId="+searchEmailId;
+	var method="GET";	
+	var deleteEmployee=sendGetRequest(method,url);	
+	document.getElementById("delete").blur();
+}
+
 function updatePassword(){
-	var emailId="<%=session.getAttribute("EmailId")%>";
+	var emailId=document.getElementById("updateProfilePassword").value;
 	var password=document.getElementById("pass").value;
 	var parameters="EmailId="+emailId+"&Password="+password;
 	var url="/updatePassword";
 	var method="POST";	
 	alert(parameters);
-	var Pass=sendRequest(method,parameters, url);	
+	var Pass=sendPostRequest(method,parameters, url);	
 	document.getElementById("updatePass").blur();
 }
 function addEmployee(){
@@ -72,9 +90,8 @@ function addEmployee(){
 	"&Address="+address+"&Department="+team+"&Role="+role+"&MobileNo="+mobileNo+"&Password="+password;
 	alert(parameters);
 	var url="/register";
-	var method="POST";
-	
-	var add=sendRequest(method,parameters, url);	
+	var method="POST";	
+	var add=sendPostRequest(method,parameters, url);	
 	document.getElementById("register").blur();
 	alert("Employee Record Added");
 }
@@ -92,57 +109,22 @@ function updateEmployee(){
 	var parameters="EmployeeName="+employeeName+"&EmployeeId="+employeeId+"&DateOfJoining="+dateOfJoining+"&EmailId="+emailId+
 	"&Address="+address+"&Department="+team+"&Role="+role+"&MobileNo="+mobileNo+"&Password="+password;
 	alert(parameters);
+	
 	var url="/register";
 	var method="POST";
 	
-	var update=sendRequest(method,parameters, url);	
+	var update=sendPostRequest(method,parameters, url);	
 	document.getElementById("update").blur();
 	alert("Employee Record Added");
 }
 
-function searchEmployeeRecord(){
-	
-	var searchEmailId=document.getElementById("searchEmailId").value;
-	
-	var parameters="EmailId="+searchEmailId;	
-	var url="/searchEmployee?EmailId="+searchEmailId;
-	var method="GET";	
-	var searchEmployee=sendRequest(method,parameters,url);
-	document.getElementById("search").blur();
-}
-
-function deleteEmployeeRecord(){
-	
-	var searchEmailId=document.getElementById("searchEmailId").value;
-	
-	var parameters="EmailId="+searchEmailId;
-	
-	var url="/deleteEmployee?EmailId="+searchEmailId;
-	var method="GET";	
-	var deleteEmployee=sendRequest(method,parameters, url);	
-	document.getElementById("delete").blur();
-}
 
 
 
-function leaveHistory(){
+
+
+function sendingLeaveRequest(){		
 	
-	var teamName = document.getElementById("departments").selectedIndex;
-	var team = document.getElementById("departments")[teamName].text;
-	var emailId=document.getElementById("email").value;
-
-	var parameters="EmailId="+emailId+"&Team="+team;
-	
-	var url="/LeaveHistory.com";
-	var method="POST";
-	alert(parameters+ " " +url);
-	var history = sendRequest(method,parameters,url);
-	document.getElementById("leavesHistoryTable").style.display='block';
-	alert(document.getElementById("leavesHistoryTable").style.display);	
-
-}
-
-function sendEmail(){		
 	var employeeName= document.getElementById("employeeName").value;
 	var emailIdFrom = document.getElementById("emailId").value;
 	var emailIdTo = document.getElementById("emailIdTo").value;
@@ -153,16 +135,16 @@ function sendEmail(){
 	var leaveFrom = document.getElementById("leaveFrom").value;
 	
 	if(document.getElementById("sickLeave").checked===true)
-	var sickLeave=1;
+		var sickLeave=1;
 	else sickLeave=0;
 	if(document.getElementById("casualLeave").checked===true)
-	var casualLeave=1;
+		var casualLeave=1;
 	else casualLeave=0;
 	if(document.getElementById("privilegeLeave").checked===true)
-	var privilegeLeave=1;
+		var privilegeLeave=1;
 	else privilegeLeave=0;
 	if(document.getElementById("otherLeave").checked===true)
-	var other=1;
+		var other=1;
 	else other=0;
 	alert(sickLeave+"  "+casualLeave+"  "+privilegeLeave+" "+other);
 	
@@ -172,27 +154,23 @@ function sendEmail(){
 	"&LeaveFrom=" + leaveFrom +"&LeaveTo="	+ leaveTo + "&RequestDate=" + requestDate + 
 	"&SickLeave=" + sickLeave+ "&CasualLeave=" + casualLeave+"&PrivilegeLeave=" + privilegeLeave+"&OtherLeave="+other;
 	
-	var url="leaveRequest";
-	
+	var url="/leaveRequest";	
 	var method="POST";
 	
-	//alert(parameters+" "+url);
 	var sendMail = confirm("Press ok to send Email and Send the Leave Request  else click cancel");
 	if (sendMail == true) {
-		var mail = sendRequest(method,parameters,url);	
+		sendPostRequest(method,parameters,url);	
 		alert("Leave Request Send Successfully");
-		document.getElementById("leaveTo").value="";
-		document.getElementById("leaveFrom").value="";
+		/* document.getElementById("leaveTo").value="";
+		document.getElementById("leaveFrom").value=""; */
 		document.getElementById("send").blur();
 		document.getElementById("sickLeave").checked=false;
 		document.getElementById("casualLeave").checked=false;
-		document.getElementById("privilegeLeave").checked=false;
-		
+		document.getElementById("privilegeLeave").checked=false;		
 
 	} else {
 		alert("Leave request was not send Please check and send");
-	}
-	
+	}	
 	
 }
 
@@ -225,73 +203,157 @@ function approvedStatus(id) {
 						+ requestDate + "&key=" + key;
 
 				var url = "/updateLeaveStatus";
-				var method="POST";
+				var method = "POST";
 				//alert(parameters+" "+url);
 				var sendMail = confirm("Press ok to send Email and Update the Leave Request Status else click cancel");
 				if (sendMail == true) {
-					var mail = sendRequest(method,parameters, url);
+					var mail = sendPostRequest(method, parameters, url);
 					document.getElementById(id).disabled = true;
 
 				} else {
 					alert("Leave request was not updated Please click ok to send Email and Update");
 				}
-				
+
 			}
 		}
 	}
+	
 
-	var request;
-	function sendRequest(method,parameters, url) {
+
+var request;	
+	function sendGetRequest(method,url) {
 		if (window.XMLHttpRequest) {
 			request = new XMLHttpRequest();
 		} else if (window.ActiveXObject) {
 			request = new ActiveXObject("MicroSoft.XMLHTTP");
 		}
 		try {
-			
+
+			request.open(method, url, true);
+			request.setRequestHeader("Content-type",
+					"application/x-www-form-urlencoded");
+			request.send();
+			request.onreadystatechange = function() {
+				if (request.readyState == 4 && request.status == 200) {
+					var JSONObject = JSON.parse(request.responseText);
+					document.getElementById("EmployeeName").value = JSONObject.employeeName;
+					document.getElementById("EmployeeId").value = JSONObject.employeeId;
+					//document.getElementById("Department").value=JSONObject.team ;
+					document.getElementById("Role").value = JSONObject.role;
+					document.getElementById("Address").value = JSONObject.address;
+					document.getElementById("DateOfJoining").value = JSONObject.dateOfJoining;
+					document.getElementById("EmailId").value = JSONObject.emailId;
+					document.getElementById("MobileNo").value = JSONObject.mobileNo;
+					document.getElementById("Password").value = JSONObject.password;
+				}
+			}
+		} catch (e) {
+			alert("Unable to connect server");
+		}
+
+	}
+	
+	
+	
+	function sendPostRequest(method, parameters, url) {
+		if (window.XMLHttpRequest) {
+			request = new XMLHttpRequest();
+		} else if (window.ActiveXObject) {
+			request = new ActiveXObject("MicroSoft.XMLHTTP");
+		}
+		try {
+
 			request.open(method, url, true);
 			request.setRequestHeader("Content-type",
 					"application/x-www-form-urlencoded");
 			request.send(parameters);
-			request.onreadystatechange=function()
-			  {
-			  if (request.readyState==4 && request.status==200)
-			    {
-				  var JSONObject = JSON.parse(request.responseText);			
-					document.getElementById("EmployeeName").value =JSONObject.employeeName ;
-					document.getElementById("EmployeeId").value=JSONObject.employeeId ;
-					//document.getElementById("Department").value=JSONObject.team ;
-					document.getElementById("Role").value=JSONObject.role ;
-					document.getElementById("Address").value=JSONObject.address ;
-					document.getElementById("DateOfJoining").value =JSONObject.dateOfJoining ;			
-					document.getElementById("EmailId").value =JSONObject.emailId ;
-					document.getElementById("MobileNo").value = JSONObject.mobileNo;
-					document.getElementById("Password").value = JSONObject.password; 
-			    }
+			request.onreadystatechange = function() {
+				if (request.readyState == 4 && request.status == 200) {
+					alert("Successfully Sent");
+				}
 			}
 		} catch (e) {
 			alert("Unable to connect server");
-		}		
-		
-	}
-
-	/* function getResponse() {
-		if (request.readyState == 4 && request.status == 200) {
-			alert("Server Connected Successfully");
-			var JSONObject = JSON.parse(request.responseText);			
-			document.getElementById("EmployeeName").value =JSONObject.employeeName ;
-			document.getElementById("EmployeeId").value=JSONObject.employeeId ;
-			document.getElementById("Team").value=JSONObject.team ;
-			document.getElementById("Role").value=JSONObject.role ;
-			document.getElementById("Address").value=JSONObject.address ;
-			document.getElementById("DateOfJoining").value =JSONObject.dateOfJoining ;			
-			document.getElementById("EmailId").value =JSONObject.emailId ;
-			document.getElementById("MobileNo").value = JSONObject.mobileNo;
-			document.getElementById("Password").value = JSONObject.password; 
-			
 		}
-	} */
+
+	}
 	
+	/* function fetchLeaveHistory(){
+	alert("hello");
+	var teamName = document.getElementById("departments").selectedIndex;
+	var team = document.getElementById("departments")[teamName].text;
+	var parameters="Team="+team;
+	var url="/leaveHistory?Team="+team;
+	var method="GET";	
+	alert(parameters);
+	sendLeaveHistory(method,url);
+	document.getElementById("leavesHistoryTable").style.display='block';
+	alert(document.getElementById("leavesHistoryTable").style.display);		
+}
+ */
+
+/*  function leaveHistory(){
+	
+	var teamName = document.getElementById("departments").selectedIndex;
+	var team = document.getElementById("departments")[teamName].text;
+	var emailId=document.getElementById("email").value;
+
+	var parameters="EmailId="+emailId+"&Team="+team;
+	
+	var url="/leaveHistory?Team="+team;
+	var method="GET";
+	alert(parameters+ " " +url);
+	var history = sendPostRequest(method,parameters,url);
+	document.getElementById("leavesHistoryTable").style.display='block';
+	alert(document.getElementById("leavesHistoryTable").style.display);	
+
+}  */
+
+	/* function sendLeaveHistory(method,url) {
+		if (window.XMLHttpRequest) {
+			request = new XMLHttpRequest();
+		} else if (window.ActiveXObject) {
+			request = new ActiveXObject("MicroSoft.XMLHTTP");
+		}
+		try {
+
+			request.open(method, url, true);
+			request.setRequestHeader("Content-type",
+					"application/x-www-form-urlencoded");
+			request.send();
+			request.onreadystatechange = function() {
+				if (request.readyState == 4 && request.status == 200) {
+					alert("Sent Successfully");
+					var table=document.getElementById("historyTable");
+					var jsonData =JSON.parse(request.responseText)
+					for(var index=0;index<jsonData.length;index++){
+						var jsonObject=jsonData[index];	
+						var row=table.insertRow(index);
+						for (var property in jsonObject) {						
+						var cell1=row.insertCell(0);
+						var cell2=row.insertCell(1);
+						var cell3=row.insertCell(2);
+						var cell4=row.insertCell(3);
+						var cell5=row.insertCell(4);
+						var cell6=row.insertCell(5);
+						var cell7=row.insertCell(6);
+						cell1=jsonObject[property].EmployeeName;
+						cell2=jsonObject[property].LeaveFrom;
+						cell3=jsonObject[property].LeaveTo;
+						cell4=jsonObject[property].AppliedDate;
+						cell5=jsonObject[property].ApprovedDate;
+						cell6=jsonObject[property].ApprovedBy;
+						cell7=jsonObject[property].Status;
+						
+					}
+					alert("Inserted Successfully");
+				}
+			}
+		} catch (e) {
+			alert("Unable to connect server");
+		}
+
+	} */
 	
 </script>
 <script type="text/javascript">
@@ -362,7 +424,8 @@ function approvedStatus(id) {
 							style="height: 50px;" /></a>
 					</div>
 
-					<div class="collapse navbar-collapse"	id="bs-example-navbar-collapse-1">
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav navbar-right">
 							<li class="dropdown"><a href="#" class="dropdown-toggle"
 								data-toggle="dropdown"><%=session.getAttribute("EmployeeName")%><strong
@@ -502,9 +565,10 @@ function approvedStatus(id) {
 									<div class="tab-pane active" id="profileInformation">
 										<h3 align="center">Profile Information</h3>
 										<hr>
-										<form class="form-horizontal" role="form" method="post" 
-										style="margin-left: 100px;">
-										<input type="hidden" id="updateProfilePassword" value="<%=session.getAttribute("EmailId")%>" >
+										<form class="form-horizontal" role="form" method="post"
+											style="margin-left: 100px;">
+											<input type="hidden" name="Email" id="updateProfilePassword"
+												value="<%=session.getAttribute("EmailId")%>">
 											<div class="form-group">
 												<label class="col-sm-2 control-label">Password</label>
 												<div class="col-sm-4">
@@ -517,15 +581,16 @@ function approvedStatus(id) {
 												<label class="col-sm-2 control-label">ReTypePassword</label>
 												<div class="col-sm-4">
 													<input type="password" class="form-control"
-														name="ReTypePassword" placeholder="Password"
-														id="rePass" value="<%=session.getAttribute("Password")%>"
+														name="ReTypePassword" placeholder="Password" id="rePass"
+														value="<%=session.getAttribute("Password")%>"
 														onblur="passCheck()" />
 												</div>
 											</div>
 											<hr>
 											<div class="form-group">
 												<div class="col-sm-offset-3 col-sm-6">
-													<button type="button" id="updatePass" class="btn btn-default" onclick="updatePassword()">Update</button>
+													<button type="button" id="updatePass"
+														class="btn btn-default" onclick="updatePassword()">Update</button>
 													<button type="reset" class="btn btn-default">Reset</button>
 												</div>
 											</div>
@@ -574,25 +639,25 @@ function approvedStatus(id) {
 												<tr>
 													<td>SickLeave</td>
 													<td>1</td>
-													<td><%=session.getAttribute("SickLeave") %></td>
+													<td><%=session.getAttribute("SickLeave")%></td>
 													<td>1</td>
 												</tr>
 												<tr>
 													<td>CasualLeave</td>
 													<td>1</td>
-													<td><%=session.getAttribute("CasualLeave") %></td>
+													<td><%=session.getAttribute("CasualLeave")%></td>
 													<td>1</td>
 												</tr>
 												<tr>
 													<td>PrivilegeLeave</td>
 													<td>15</td>
-													<td><%=session.getAttribute("PrivilegeLeave") %></td>
+													<td><%=session.getAttribute("PrivilegeLeave")%></td>
 													<td>15</td>
 												</tr>
 												<tr>
 													<td>LossOfPay</td>
 													<td>0</td>
-													<td><%=session.getAttribute("OtherLeave") %></td>
+													<td><%=session.getAttribute("OtherLeave")%></td>
 													<td>0</td>
 												</tr>
 											</table>
@@ -600,19 +665,20 @@ function approvedStatus(id) {
 									</div>
 									<!--  End of Leave Summary -->
 									<!-- Leave History -->
-									<div class="tab-pane fade " id="leaveHistory" >
+									<div class="tab-pane fade " id="leaveHistory">
 										<h3 align="center">Leave History</h3>
 
-										<form class="form-horizontal" role="form" method="post">
+										<form class="form-horizontal" role="form" method="post" action="/leaveHistory">
 											<%
 												if (session.getAttribute("role").equals("TeamLeader")
 														|| session.getAttribute("role").equals("Administrator")) {
 											%>
 											<hr>
-											<div class="form-group" >
+											<div class="form-group">
 												<label class="col-sm-2 control-label">Department</label>
-												<div class="col-sm-3" >
-													<select class="form-control" id="departments">
+												<div class="col-sm-3">
+													<select class="form-control" id="departments"
+														onchange="fetchLeaveHistory()"  name="Team">
 														<option>AccountManagement</option>
 														<option>BusinessSupport</option>
 														<option>ContentWriting</option>
@@ -626,15 +692,11 @@ function approvedStatus(id) {
 														<option>QualityAssurance</option>
 														<option>Testing</option>
 													</select>
-												</div>
-												<label class="col-sm-1 control-label">EmailId</label>
-												<div class="col-sm-4" >
-													<input type="text" class="form-control" name="EmailId"
-														id="email" placeholder="EmailId" />
-												</div>
-												<div class="col-sm-1">
-													<button type="button" class="btn btn-default"
-														onclick="leaveHistory()">Search</button>
+												</div>		
+												<div class=" col-sm-4">
+													<button type="submit" class="btn btn-default"
+														name="LeaveHistory">ViewLeaveHistory</button>
+													
 												</div>
 												<div class="col-sm-1">
 													<button type="reset" class="btn btn-default">Reset</button>
@@ -645,21 +707,22 @@ function approvedStatus(id) {
 												}
 											%>
 
-											<div class="table-responsive" id="leavesHistoryTable" >
+											<div class="table-responsive" id="leavesHistoryTable"
+												style="display: block">
 
-												<div class="form-group" >
-													<table class="table ">
+												<div class="form-group">
+													<table class="table" id="historyTable">
 														<tr>
 															<th>NameOfApplicant</th>
-															<th>Team</th>
-															<th>Role</th>
 															<th>LeaveFrom</th>
 															<th>LeaveTo</th>
 															<th>AppliedDate</th>
+															<th>ApprovedDate</th>
+															<th>ApprovedBy</th>
 															<th>Status</th>
 
 														</tr>
-														<c:forEach items="${LeavesTaken}" var="leavesHistory">
+														 <c:forEach items="${LeavesTaken}" var="leavesHistory">
 															<tr>
 																<td>${leavesHistory.nameOfApplicant}</td>
 																<td>${leavesHistory.team}</td>
@@ -669,8 +732,17 @@ function approvedStatus(id) {
 																<td>${leavesHistory.appliedDate}</td>
 																<td>${leavesHistory.status}</td>
 															</tr>
-														</c:forEach>
+														</c:forEach> 
 													</table>
+													<!-- 	<ul class="pagination pagination-sm">
+														<li><a href="#">Prev</a></li>
+														<li><a href="#">1</a></li>
+														<li><a href="#">2</a></li>
+														<li><a href="#">3</a></li>
+														<li><a href="#">4</a></li>
+														<li><a href="#">5</a></li>
+														<li><a href="#">Next</a></li>
+													</ul> -->
 												</div>
 											</div>
 										</form>
@@ -683,7 +755,8 @@ function approvedStatus(id) {
 
 										<h3 align="center">Leave Request Form</h3>
 										<hr>
-										<form class="form-horizontal" role="form" method="post"	style=" margin-left: 100px;">
+										<form class="form-horizontal" role="form" method="POST"
+											style="margin-left: 100px;">
 
 											<div class="form-group">
 												<label class="col-sm-3 control-label">EmployeeName</label>
@@ -741,12 +814,11 @@ function approvedStatus(id) {
 												<div class="col-sm-4">
 													<%
 														Date today = new Date();
-														SimpleDateFormat date = new SimpleDateFormat(
-																"MM/dd/yyyy");														
+														SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
 													%>
 													<input class="form-control" maxlength="10"
-														placeholder="MM/dd/yyyy" value="<%=date.format(today)%>" name="RequestDate"
-														type="text" id="requestDate" required >
+														placeholder="MM/dd/yyyy" value="<%=date.format(today)%>"
+														name="RequestDate" type="text" id="requestDate" required>
 												</div>
 											</div>
 											<div class="form-group">
@@ -769,19 +841,18 @@ function approvedStatus(id) {
 													</label> <label class="checkbox-inline"> <input
 														type="checkbox" id="privilegeLeave" value="PrivilegeLeave">
 														PrivilegeLeave
-													</label>
-													<label class="checkbox-inline"> <input
+													</label> <label class="checkbox-inline"> <input
 														type="checkbox" id="otherLeave" value="OtherLeave">
 														OtherLeave
-													</label>													
+													</label>
 												</div>
-												<label style="color:red;">${Mail}</label>												
+												<label style="color: red;">${Mail}</label>
 											</div>
 											<hr>
 											<div class="form-group">
 												<div class="col-sm-offset-3 col-sm-5">
-													<button type="button" class="btn btn-default"
-														name="SendEmail" id="send" onclick="sendEmail()">SendEmail</button>
+													<button type="submit" class="btn btn-default"
+														name="SendEmail" id="send" onclick="sendingLeaveRequest()">SendEmail</button>
 													<button type="reset" name="Reset" class="btn btn-default">Reset</button>
 												</div>
 											</div>
@@ -794,8 +865,15 @@ function approvedStatus(id) {
 									<div class="tab-pane fade " id="pendingLeaveRequest">
 
 										<h3 align="center">Pending Leave Request</h3>
-										
-										<form class="form-horizontal" role="form" method="get">
+
+										<form class="form-horizontal" role="form" method="POST" action="/pendingLeaveRequest">
+											<div class="form-group">
+												<div class="col-sm-offset-9 col-sm-4">
+													<button type="submit" class="btn btn-default"
+														name="Registration">ViewPendingLeaves</button>
+													
+												</div>
+											</div>
 											<hr>
 											<div class="table-responsive" id="pendingLeavesTable">
 
@@ -851,7 +929,7 @@ function approvedStatus(id) {
 							</div>
 
 							<!-- End of Leave Information -->
-	
+
 							<!-- Employee Information -->
 							<div id="employeeInfo" style="display: none;">
 								<!-- Nav tabs -->
@@ -875,8 +953,8 @@ function approvedStatus(id) {
 												<label class="col-sm-2 control-label">EmployeeName</label>
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="Gopal123"
-														name="EmployeeName" type="text" id="aemployeeName" value=""
-														required>
+														name="EmployeeName" type="text" id="aemployeeName"
+														value="" required>
 
 												</div>
 												<label class="col-sm-2 control-label">EmployeeId</label>
@@ -930,7 +1008,8 @@ function approvedStatus(id) {
 												<label class="col-sm-2 control-label">EmailId</label>
 												<div class="col-sm-4">
 													<input class="form-control" placeholder="Gopal88@gmail.com"
-														name="EmailId" type="email" id="aemailId" value="" required>
+														name="EmailId" type="email" id="aemailId" value=""
+														required>
 												</div>
 												<label class="col-sm-2 control-label">MobileNo</label>
 												<div class="col-sm-4">
@@ -979,20 +1058,21 @@ function approvedStatus(id) {
 											<div class="form-group">
 												<label class="col-sm-1 control-label">Email</label>
 												<div class="col-sm-4">
-													<input type="text" class="form-control" name="EmailId" id="searchEmailId"
-														placeholder="Email" />
+													<input type="text" class="form-control" name="EmailId"
+														id="searchEmailId" placeholder="Email" />
 												</div>
 												<div class="col-sm-2">
-													<button type="button" class="btn btn-default" id="search" onclick="searchEmployeeRecord()">Search</button>
+													<button type="button" class="btn btn-default" id="search"
+														onclick="searchEmployeeRecord()">Search</button>
 												</div>
 												<div class="col-sm-2">
-												<button type="button" class="btn btn-default" name="Delete"
+													<button type="button" class="btn btn-default" name="Delete"
 														id="delete" onclick="deleteEmployeeRecord()">Delete</button>
 												</div>
 												<div class="col-sm-1">
 													<button type="reset" class="btn btn-default">Reset</button>
 												</div>
-												
+
 											</div>
 										</form>
 										<form class="form-horizontal" role="form" method="POST"
@@ -1077,7 +1157,7 @@ function approvedStatus(id) {
 											<div class="form-group">
 												<div class="col-sm-offset-4 col-sm-5">
 													<button type="button" class="btn btn-default" name="Update"
-														id="update" onclick="updateEmployee()">Update</button>													
+														id="update" onclick="updateEmployee()">Update</button>
 													<button type="reset" class="btn btn-default">Reset</button>
 												</div>
 											</div>
