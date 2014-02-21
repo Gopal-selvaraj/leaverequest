@@ -12,9 +12,9 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>LeaveRequest</servlet-name>
-		
+		<servlet-name>LeaveRequest</servlet-name>		
 		<url-pattern>/register</url-pattern>
+		<url-pattern>/leaveStatus</url-pattern>
 		<url-pattern>/registerPage</url-pattern>
 		<url-pattern>/registration</url-pattern>
 		<url-pattern>/login</url-pattern>
@@ -25,11 +25,9 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<url-pattern>/deleteEmployee</url-pattern>
 		<url-pattern>/updateEmployee</url-pattern>
 		<url-pattern>/leaveRequest</url-pattern>
-		<url-pattern>/updateLeaveStatus</url-pattern>
-		<url-pattern>/pendingLeaveRequest</url-pattern>
+		<url-pattern>/updateLeaveStatus</url-pattern>		
 		<url-pattern>/leaveHistory</url-pattern>
 		<url-pattern>/updatePassword</url-pattern>		
-		
 	</servlet-mapping>
 
 	<welcome-file-list>
@@ -41,8 +39,8 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 			<web-resource-name>mail</web-resource-name>
 			<url-pattern>/_ah/mail/*</url-pattern>
 		</web-resource-collection>
-		<auth-constraint>
+		 <auth-constraint>
 			<role-name>admin</role-name>
-		</auth-constraint>
+		</auth-constraint> 
 	</security-constraint>
 </web-app>

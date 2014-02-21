@@ -17,12 +17,12 @@
 <title>User Pages</title>
 <%
 	if (session.getAttribute("EmployeeName") == null
-			|| session.getAttribute("EmployeeName") == "") {
+	|| session.getAttribute("EmployeeName") == "") {
 		session.invalidate();
 		response.sendRedirect("/HomeTemplate.com");
 	} else {
 		response.setHeader("Cache-Control",
-				"no-cache, no-store, must-revalidate");
+		"no-cache, no-store, must-revalidate");
 		response.setHeader("Pragma", "no-cache");
 		response.setDateHeader("Expires", 0);
 
@@ -118,11 +118,6 @@ function updateEmployee(){
 	alert("Employee Record Added");
 }
 
-
-
-
-
-
 function sendingLeaveRequest(){		
 	
 	var employeeName= document.getElementById("employeeName").value;
@@ -159,7 +154,7 @@ function sendingLeaveRequest(){
 	
 	var sendMail = confirm("Press ok to send Email and Send the Leave Request  else click cancel");
 	if (sendMail == true) {
-		sendPostRequest(method,parameters,url);	
+		var mail=sendPostRequest(method,parameters,url);	
 		alert("Leave Request Send Successfully");
 		/* document.getElementById("leaveTo").value="";
 		document.getElementById("leaveFrom").value=""; */
@@ -277,39 +272,30 @@ var request;
 		}
 
 	}
-	
-	/* function fetchLeaveHistory(){
-	alert("hello");
+//Fetch the LeaveHistory List by the administrator
+ function fetchLeaveHistory(){	
 	var teamName = document.getElementById("departments").selectedIndex;
 	var team = document.getElementById("departments")[teamName].text;
 	var parameters="Team="+team;
 	var url="/leaveHistory?Team="+team;
-	var method="GET";	
-	alert(parameters);
-	sendLeaveHistory(method,url);
+	var method="GET";		
+	var table=document.getElementById("historyTable");
+	sendLeaveHistory(method, url,table);
 	document.getElementById("leavesHistoryTable").style.display='block';
-	alert(document.getElementById("leavesHistoryTable").style.display);		
-}
- */
-
-/*  function leaveHistory(){
-	
-	var teamName = document.getElementById("departments").selectedIndex;
-	var team = document.getElementById("departments")[teamName].text;
-	var emailId=document.getElementById("email").value;
-
-	var parameters="EmailId="+emailId+"&Team="+team;
-	
-	var url="/leaveHistory?Team="+team;
-	var method="GET";
-	alert(parameters+ " " +url);
-	var history = sendPostRequest(method,parameters,url);
-	document.getElementById("leavesHistoryTable").style.display='block';
-	alert(document.getElementById("leavesHistoryTable").style.display);	
-
-}  */
-
-	/* function sendLeaveHistory(method,url) {
+			
+} 
+//Fetch the Leaves List by the employee
+ function fetchLeaves(){	
+		var team = "<%=session.getAttribute("Team")%>";
+		var emailId = "<%=session.getAttribute("EmailId")%>";
+		var url = "/leaveHistory?Team=" + team + "&EmailId=" + emailId;
+		var method = "GET";
+		var table = document.getElementById("historyTable");
+		sendLeaveHistory(method, url, table);
+		document.getElementById("leavesHistoryTable").style.display = 'block';
+				
+	}
+ function sendLeaveHistory(method, url, table) {
 		if (window.XMLHttpRequest) {
 			request = new XMLHttpRequest();
 		} else if (window.ActiveXObject) {
@@ -323,37 +309,123 @@ var request;
 			request.send();
 			request.onreadystatechange = function() {
 				if (request.readyState == 4 && request.status == 200) {
-					alert("Sent Successfully");
-					var table=document.getElementById("historyTable");
-					var jsonData =JSON.parse(request.responseText)
-					for(var index=0;index<jsonData.length;index++){
-						var jsonObject=jsonData[index];	
-						var row=table.insertRow(index);
-						for (var property in jsonObject) {						
-						var cell1=row.insertCell(0);
-						var cell2=row.insertCell(1);
-						var cell3=row.insertCell(2);
-						var cell4=row.insertCell(3);
-						var cell5=row.insertCell(4);
-						var cell6=row.insertCell(5);
-						var cell7=row.insertCell(6);
-						cell1=jsonObject[property].EmployeeName;
-						cell2=jsonObject[property].LeaveFrom;
-						cell3=jsonObject[property].LeaveTo;
-						cell4=jsonObject[property].AppliedDate;
-						cell5=jsonObject[property].ApprovedDate;
-						cell6=jsonObject[property].ApprovedBy;
-						cell7=jsonObject[property].Status;
-						
+					var jsonData = JSON.parse(request.responseText);					
+					var ind = 0;
+					var k;
+					var keys = [];
+					for ( var k in jsonData) {
+						if (jsonData.hasOwnProperty(k)) {
+							keys.push(k);
+						}
 					}
-					alert("Inserted Successfully");
+					keys.sort();
+					var len = keys.length;
+					for (var i = 0; i < len; i++) {
+						var rowIndex = i + 1;
+						var row = table.insertRow(rowIndex);
+						k = keys[i];
+						var cell1 = row.insertCell(0);
+						cell1.innerHTML = jsonData[k].EmployeeName;
+						var cell2 = row.insertCell(1);
+						cell2.innerHTML = jsonData[k].LeaveFrom;
+						var cell3 = row.insertCell(2);
+						cell3.innerHTML = jsonData[k].LeaveTo;
+						var cell4 = row.insertCell(3);
+						cell4.innerHTML = jsonData[k].AppliedDate;
+						var cell5 = row.insertCell(4);
+						cell5.innerHTML = jsonData[k].ApprovedDate;
+						var cell6 = row.insertCell(5);
+						cell6.innerHTML = jsonData[k].ApprovedBy;
+						var cell7 = row.insertCell(6);
+						cell7.innerHTML = jsonData[k].Status;						
+					}					
 				}
 			}
 		} catch (e) {
 			alert("Unable to connect server");
 		}
+	}
+//Fetch the Leave status as per the status by the administrator
+	function fetchLeaveStatus() {
+		var statusName = document.getElementById("viewStatus").selectedIndex;
+		var status = document.getElementById("viewStatus")[statusName].text;
+		var url = "/leaveStatus?Status=" + status;
+		var method = "GET";
+		var table = document.getElementById("statusTable");
+		fetchLeaveStatusHistory(method, url, table);
+		document.getElementById("leaveStatusTable").style.display = 'block';
+	}
+	
+	function fetchLeaveStatusHistory(method, url, table) {
+		if (window.XMLHttpRequest) {
+			request = new XMLHttpRequest();
+		} else if (window.ActiveXObject) {
+			request = new ActiveXObject("MicroSoft.XMLHTTP");
+		}
+		try {
 
-	} */
+			request.open(method, url, true);
+			request.setRequestHeader("Content-type",
+					"application/x-www-form-urlencoded");
+			request.send();
+			request.onreadystatechange = function() {
+				if (request.readyState == 4 && request.status == 200) {
+					var jsonData = JSON.parse(request.responseText);					
+					//var ind = 0;
+					var k;
+					var keys = [];
+					for ( var k in jsonData) {
+						if (jsonData.hasOwnProperty(k)) {
+							keys.push(k);
+						}
+					}
+					keys.sort();
+					var len = keys.length;
+					for (var i = 0; i < len; i++) {
+						var rowIndex = i + 1;
+						var row = table.insertRow(rowIndex);
+						k = keys[i];
+						var cell1 = row.insertCell(0);
+						cell1.innerHTML = jsonData[k].EmployeeName;
+						var cell2 = row.insertCell(1);
+						cell2.innerHTML = jsonData[k].LeaveFrom;
+						var cell3 = row.insertCell(2);
+						cell3.innerHTML = jsonData[k].LeaveTo;
+						var cell4 = row.insertCell(3);
+						cell4.innerHTML = jsonData[k].AppliedDate;
+						var cell5 = row.insertCell(4);
+						cell5.innerHTML = jsonData[k].ApprovedDate;
+						var cell6 = row.insertCell(5);
+						cell6.innerHTML = jsonData[k].ApprovedBy;
+						var cell7 = row.insertCell(6);
+						if(jsonData[k].Status==="Pending"){
+							alert("Iam pending");
+							var select=document.createElement("select");
+							var option=document.createElement("option");
+							var status=["Pending","Approved","Declined"];
+							cell7.innerHTML ="<select id='status"+k+"'>";	
+							for(var ind=0;ind<3;ind++){
+								option.value=status[ind];
+								alert(option.value);
+							//cell7.innerHTML=cell7.innerHTML+"<option value='"+jsonData[k].Status+"'>"+jsonData[k].Status+"</option>" ;
+							//cell7.innerHTML=cell7.innerHTML+"<option value='Approved'>"+"Approved"+"</option>" ;
+							//cell7.innerHTML=cell7.innerHTML+"<option value='"+status[ind]+"'>"+status[ind]+"</option>" ;
+							}
+							 
+							cell7.innerHTML =cell7.innerHTML+"</select>";
+						}
+						else{
+							cell7.innerHTML = jsonData[k].Status;
+						}
+												
+					}					
+				}
+			}
+		} catch (e) {
+			alert("Unable to connect server");
+		}
+	}
+
 	
 </script>
 <script type="text/javascript">
@@ -451,7 +523,7 @@ var request;
 					<div class="col-md-2 column">
 						<%
 							if (session.getAttribute("role").equals("TeamLeader")
-									|| session.getAttribute("role").equals("Administrator")) {
+													|| session.getAttribute("role").equals("Administrator")) {
 						%>
 						<ul class="nav nav-list">
 							<li><a href="#" onclick="showEmployeeMenu()" id="employee">EmployeeInfomation</a></li>
@@ -604,16 +676,16 @@ var request;
 							<div id="leaveInfo" style="display: none;">
 								<!-- Nav tabs -->
 								<ul class="nav nav-tabs">
-									<li class="active"><a href="#leaveSummary"
-										data-toggle="tab">LeaveSummary</a></li>
+									<!-- <li class="active"><a href="#leaveSummary"
+										data-toggle="tab">LeaveSummary</a></li> -->
 
 									<li><a href="#leaveRequest" data-toggle="tab">LeaveRequest</a></li>
 
 									<%
 										if (session.getAttribute("role").equals("TeamLeader")
-												|| session.getAttribute("role").equals("Administrator")) {
+																			|| session.getAttribute("role").equals("Administrator")) {
 									%>
-									<li><a href="#pendingLeaveRequest" data-toggle="tab">PendingLeaveRequest</a></li>
+									<li><a href="#leaveStatusRequest" data-toggle="tab">LeaveStatusRequest</a></li>
 									<%
 										}
 									%>
@@ -623,7 +695,7 @@ var request;
 								<!-- Leaves Tab panes -->
 								<div class="tab-content">
 
-									<!-- Leave Summary -->
+									<%-- 	<!-- Leave Summary -->
 									<div class="tab-pane active" id="leaveSummary">
 
 										<h3 align="center">Leave Summary</h3>
@@ -663,22 +735,25 @@ var request;
 											</table>
 										</form>
 									</div>
-									<!--  End of Leave Summary -->
+									<!--  End of Leave Summary --> --%>
 									<!-- Leave History -->
 									<div class="tab-pane fade " id="leaveHistory">
-										<h3 align="center">Leave History</h3>
 
-										<form class="form-horizontal" role="form" method="post" action="/leaveHistory">
-											<%
-												if (session.getAttribute("role").equals("TeamLeader")
-														|| session.getAttribute("role").equals("Administrator")) {
-											%>
+										<h3 align="center">Leave History</h3>
+										<form class="form-horizontal" role="form" method="GET">
+									<%
+											if (session.getAttribute("role").equals("TeamLeader")
+																						|| session.getAttribute("role").equals("Administrator")) {
+										%>								
+										
+										
+
 											<hr>
 											<div class="form-group">
 												<label class="col-sm-2 control-label">Department</label>
 												<div class="col-sm-3">
 													<select class="form-control" id="departments"
-														onchange="fetchLeaveHistory()"  name="Team">
+														onchange="fetchLeaveHistory()" name="Team">
 														<option>AccountManagement</option>
 														<option>BusinessSupport</option>
 														<option>ContentWriting</option>
@@ -692,26 +767,23 @@ var request;
 														<option>QualityAssurance</option>
 														<option>Testing</option>
 													</select>
-												</div>		
-												<div class=" col-sm-4">
+												</div>
+												<!-- <div class=" col-sm-4">
 													<button type="submit" class="btn btn-default"
 														name="LeaveHistory">ViewLeaveHistory</button>
 													
-												</div>
+												</div> -->
 												<div class="col-sm-1">
 													<button type="reset" class="btn btn-default">Reset</button>
 												</div>
 											</div>
+
 											<hr>
-											<%
-												}
-											%>
-
 											<div class="table-responsive" id="leavesHistoryTable"
-												style="display: block">
-
+												style="display: none">
 												<div class="form-group">
 													<table class="table" id="historyTable">
+
 														<tr>
 															<th>NameOfApplicant</th>
 															<th>LeaveFrom</th>
@@ -722,33 +794,49 @@ var request;
 															<th>Status</th>
 
 														</tr>
-														 <c:forEach items="${LeavesTaken}" var="leavesHistory">
-															<tr>
-																<td>${leavesHistory.nameOfApplicant}</td>
-																<td>${leavesHistory.team}</td>
-																<td>${leavesHistory.role}</td>
-																<td>${leavesHistory.leaveFrom}</td>
-																<td>${leavesHistory.leaveTo}</td>
-																<td>${leavesHistory.appliedDate}</td>
-																<td>${leavesHistory.status}</td>
-															</tr>
-														</c:forEach> 
+
 													</table>
-													<!-- 	<ul class="pagination pagination-sm">
-														<li><a href="#">Prev</a></li>
-														<li><a href="#">1</a></li>
-														<li><a href="#">2</a></li>
-														<li><a href="#">3</a></li>
-														<li><a href="#">4</a></li>
-														<li><a href="#">5</a></li>
-														<li><a href="#">Next</a></li>
-													</ul> -->
+
 												</div>
 											</div>
-										</form>
+											
 
+										
+										
+										<%}else{%>									
+										
+											<hr>
+											<div class="table-responsive" id="leavesHistoryTable"
+												style="display: none">
+												
+												<div class="form-group">
+													<table class="table" id="historyTable">
 
+														<tr>
+															<th>NameOfApplicant</th>
+															<th>LeaveFrom</th>
+															<th>LeaveTo</th>
+															<th>AppliedDate</th>
+															<th>ApprovedDate</th>
+															<th>ApprovedBy</th>
+															<th>Status</th>
+
+														</tr>
+													</table>
+
+												</div>
+											</div>
+											
+										
+										<script>
+											fetchLeaves();
+										</script>
+										<%
+												}
+											%>
+											</form>
 									</div>
+									
 									<!-- End of Leave History -->
 									<!-- Leave Request -->
 									<div class="tab-pane fade " id="leaveRequest">
@@ -814,7 +902,7 @@ var request;
 												<div class="col-sm-4">
 													<%
 														Date today = new Date();
-														SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
+																									SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
 													%>
 													<input class="form-control" maxlength="10"
 														placeholder="MM/dd/yyyy" value="<%=date.format(today)%>"
@@ -851,7 +939,7 @@ var request;
 											<hr>
 											<div class="form-group">
 												<div class="col-sm-offset-3 col-sm-5">
-													<button type="submit" class="btn btn-default"
+													<button type="button" class="btn btn-default"
 														name="SendEmail" id="send" onclick="sendingLeaveRequest()">SendEmail</button>
 													<button type="reset" name="Reset" class="btn btn-default">Reset</button>
 												</div>
@@ -862,23 +950,28 @@ var request;
 									<!-- End of Leave Request -->
 
 									<!-- Pending Leave Request -->
-									<div class="tab-pane fade " id="pendingLeaveRequest">
+									<div class="tab-pane fade " id="leaveStatusRequest">
 
-										<h3 align="center">Pending Leave Request</h3>
+										<h3 align="center">Leave Status Request</h3>
 
-										<form class="form-horizontal" role="form" method="POST" action="/pendingLeaveRequest">
+										<form class="form-horizontal" role="form" method="GET">
 											<div class="form-group">
-												<div class="col-sm-offset-9 col-sm-4">
-													<button type="submit" class="btn btn-default"
-														name="Registration">ViewPendingLeaves</button>
-													
+												<div class="col-sm-offset-9 col-sm-2">
+													<select class="form-control" id="viewStatus"
+														onchange="fetchLeaveStatus()" name="ViewLeaves">
+														<option>Approved</option>
+														<option>Declined</option>
+														<option>Pending</option>
+													</select>
+
 												</div>
 											</div>
 											<hr>
-											<div class="table-responsive" id="pendingLeavesTable">
+											<div class="table-responsive" id="leaveStatusTable"
+												style="display: none;">
 
 												<div class="form-group">
-													<table class="table ">
+													<table class="table " id="statusTable">
 														<tr>
 															<th>NameOfApplicant</th>
 															<th>Team</th>

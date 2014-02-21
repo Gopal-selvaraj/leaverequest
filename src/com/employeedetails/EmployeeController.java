@@ -194,7 +194,7 @@ public class EmployeeController {
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public void register(HttpServletRequest req, HttpServletResponse res)
+	public String register(HttpServletRequest req)
 			throws ParseException {
 
 		// Create the singleton Object for persistence manager Class
@@ -243,6 +243,7 @@ public class EmployeeController {
 			// Close the Persistence Manager
 			pm.close();
 		}
+		return "LoginTemplate";
 
 	}
 
@@ -269,12 +270,11 @@ public class EmployeeController {
 			List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query
 					.execute();
 			EmployeeBeanClass employeeLogin = employees.get(0);
-		//	System.out.println("i am out "+employeeLogin.getPassword());
-		//	System.out.println(employeeLogin.getPassword());
+		
 			
 			if (employeeLogin.getPassword().equals(password)) {
 				
-			//	System.out.println("am in side "+employeeLogin.getPassword());
+			
 				// Creating the session and setting the employee details
 				// into the session variables
 				
@@ -298,28 +298,14 @@ public class EmployeeController {
 				for(EmployeeBeanClass teamLead :tlName){
 					if(teamLead.getRole().equals("TeamLeader")){
 						session.setAttribute("TeamLead", teamLead.getEmployeeEmailId());
-				//		System.out.println("teamlead "+ teamLead);
+				
 					}
 				}	
 
 				loginState = 1;
 
 			} 			
-			  /*String team = (String) session.getAttribute("Team"); String
-			  status = "Pending";
-			  
-			  Query pending = pm.newQuery(LeaveRequestBeanClass.class);
-			  pending.setFilter( " team == '" + team + "' " + "&& status == '" + status + "' ");
-			  List<LeaveRequestBeanClass> pendingLeaves =  (List<LeaveRequestBeanClass>) pending .execute();
-			  model.addObject("PendingLeaves", pendingLeaves);
-			  
-			  Query history = pm.newQuery(LeaveRequestBeanClass.class);
-			  history.setFilter("employeeEmailId == '" + emailId + "' ");
-			  List<LeaveRequestBeanClass> leavesTaken =
-			  (List<LeaveRequestBeanClass>) history .execute();
-			  
-			  model.addObject("LeavesTaken", leavesTaken);*/			 
-
+			 
 			model.setViewName("LoginTemplate");
 
 		} catch (Exception e) {
