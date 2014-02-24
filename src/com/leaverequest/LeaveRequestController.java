@@ -43,7 +43,7 @@ public class LeaveRequestController {
 		return "LeaveRequestForm";
 	}
 
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({ "unchecked" })
 	@RequestMapping(value = "/employeeLeaveHistory", method = RequestMethod.GET)
 	@ResponseBody
 	public String employeeLeaveHistory(HttpServletRequest req,
@@ -51,8 +51,7 @@ public class LeaveRequestController {
 		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		// Create the Object for LeaveRequestBeanClass
-		LeaveRequestBeanClass leaveRequest = LeaveRequestBeanClass
-				.getInstance();
+		LeaveRequestBeanClass.getInstance();
 		String team = req.getParameter("Team");
 		String emailId = req.getParameter("EmailId");		
 		Query history = pm.newQuery(LeaveRequestBeanClass.class);
@@ -79,14 +78,14 @@ public class LeaveRequestController {
 
 	}
 
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({ "unchecked" })
 	@RequestMapping(value = "/leaveHistory", method = RequestMethod.GET)
 	@ResponseBody
 	public String leaveHistory(HttpServletRequest req, HttpServletResponse res) {
 		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		// Create the Object for LeaveRequestBeanClass
-		LeaveRequestBeanClass leaves = LeaveRequestBeanClass.getInstance();
+		LeaveRequestBeanClass.getInstance();
 		String team = req.getParameter("Team");
 		Query history = pm.newQuery(LeaveRequestBeanClass.class);
 		history.setFilter(" team == '" + team + "' ");
@@ -117,14 +116,14 @@ public class LeaveRequestController {
 
 	}
 
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({ "unchecked" })
 	@RequestMapping(value = "/leaveStatus", method = RequestMethod.GET)
 	@ResponseBody
 	public String viewStatus(HttpServletRequest req, HttpServletResponse res) {
 		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		// Create the Object for LeaveRequestBeanClass
-		LeaveRequestBeanClass leaves = LeaveRequestBeanClass.getInstance();
+		LeaveRequestBeanClass.getInstance();
 		String status = req.getParameter("Status");
 		// Query pending = pm.newQuery(LeaveRequestBeanClass.class, "(team == '"
 		// + team + "' )" + "&& status == '" + status + "' ");
@@ -155,15 +154,14 @@ public class LeaveRequestController {
 
 	}
 
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({ "unchecked" })
 	@RequestMapping(value = "/updateLeaveStatus", method = RequestMethod.POST)
 	public ModelAndView updateStatus(HttpServletRequest req, ModelAndView model) {
 
 		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		// Create the Object for LeaveRequestBeanClass
-		LeaveRequestBeanClass leaveRequest = LeaveRequestBeanClass
-				.getInstance();
+		LeaveRequestBeanClass.getInstance();
 
 		try {
 
