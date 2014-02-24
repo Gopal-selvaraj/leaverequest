@@ -6,6 +6,24 @@ import javax.jdo.annotations.PersistenceCapable;
 @PersistenceCapable
 public class LeaveRequestBeanClass {
 
+	
+
+	private String key;
+	private String employeeEmailId;
+	private String nameOfApplicant;
+	private String team;
+	private String role;
+	private String nameOfPoc;
+	private String status;
+	private String leaveFrom;
+	private String leaveTo;
+	private String appliedDate;
+	private String approvedDate;
+	private String sickLeaves;
+	private String casualLeaves;
+	private String privilegeLeaves;
+	private String otherLeaves;
+
 	public String getSickLeaves() {
 		return sickLeaves;
 	}
@@ -37,24 +55,6 @@ public class LeaveRequestBeanClass {
 	public void setOtherLeaves(String otherLeaves) {
 		this.otherLeaves = otherLeaves;
 	}
-
-	private String key;
-	private String employeeEmailId;
-	private String nameOfApplicant;
-	private String team;
-	private String role;
-	private String nameOfPoc;
-	private String status;
-	private String leaveFrom;
-	private String leaveTo;
-	private String appliedDate;
-	private String approvedDate;
-	private String sickLeaves;
-	private String casualLeaves;
-	private String privilegeLeaves;
-	private String otherLeaves;
-
-	
 	public String getKey() {
 		return key;
 	}

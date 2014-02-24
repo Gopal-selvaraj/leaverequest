@@ -43,25 +43,26 @@ public class LeaveRequestController {
 		return "LeaveRequestForm";
 	}
 
-	@SuppressWarnings({ "unchecked" })
-	@RequestMapping(value = "/leaveHistory", method = RequestMethod.GET)
+	@SuppressWarnings({ "unchecked", "unused" })
+	@RequestMapping(value = "/employeeLeaveHistory", method = RequestMethod.GET)
 	@ResponseBody
-	public String leaveHistory(HttpServletRequest req, HttpServletResponse res) {
+	public String employeeLeaveHistory(HttpServletRequest req,
+			HttpServletResponse res) {
+		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		// String emailId="";
+		// Create the Object for LeaveRequestBeanClass
+		LeaveRequestBeanClass leaveRequest = LeaveRequestBeanClass
+				.getInstance();
 		String team = req.getParameter("Team");
-		String emailId = req.getParameter("EmailId");
-		LeaveRequestBeanClass leaves = LeaveRequestBeanClass.getInstance();
+		String emailId = req.getParameter("EmailId");		
 		Query history = pm.newQuery(LeaveRequestBeanClass.class);
 		history.setFilter(" team == '" + team + "' ");
 		List<LeaveRequestBeanClass> leavesTaken = (List<LeaveRequestBeanClass>) history
 				.execute();
-
-		JSONObject jsonObject = new JSONObject();
-		JSONArray jsonArray = new JSONArray();		
-		
-			for (LeaveRequestBeanClass leave : leavesTaken) {
-				if (leave.getEmployeeEmailId().equals(emailId)) {
+		JSONArray jsonArray = new JSONArray();
+		for (LeaveRequestBeanClass leave : leavesTaken) {
+			if (emailId.equals(leave.getEmployeeEmailId())) {
+				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("AppliedDate", leave.getAppliedDate());
 				jsonObject.put("ApprovedDate", leave.getApprovedDate());
 				jsonObject.put("LeaveFrom", leave.getLeaveFrom());
@@ -69,64 +70,31 @@ public class LeaveRequestController {
 				jsonObject.put("EmployeeName", leave.getNameOfApplicant());
 				jsonObject.put("ApprovedBy", leave.getNameOfPoc());
 				jsonObject.put("Status", leave.getStatus());
-				/*
-				 * jsonObject.put("CasualLeaves", leave.getCasualLeaves());
-				 * jsonObject.put("OtherLeaves", leave.getOtherLeaves());
-				 * jsonObject.put("PrivilegeLeaves",
-				 * leave.getPrivilegeLeaves()); jsonObject.put("SickLeaves",
-				 * leave.getSickLeaves());
-				 */
-
+				System.out.println(jsonObject.get("AppliedDate"));
 				jsonArray.add(jsonObject);
 			}
-				else {
-					
-
-					jsonObject.put("AppliedDate", leave.getAppliedDate());
-					jsonObject.put("ApprovedDate", leave.getApprovedDate());
-					jsonObject.put("LeaveFrom", leave.getLeaveFrom());
-					jsonObject.put("LeaveTo", leave.getLeaveTo());
-					jsonObject.put("EmployeeName", leave.getNameOfApplicant());
-					jsonObject.put("ApprovedBy", leave.getNameOfPoc());
-					jsonObject.put("Status", leave.getStatus());
-					/*
-					 * jsonObject.put("CasualLeaves", leave.getCasualLeaves());
-					 * jsonObject.put("OtherLeaves", leave.getOtherLeaves());
-					 * jsonObject.put("PrivilegeLeaves",
-					 * leave.getPrivilegeLeaves()); jsonObject.put("SickLeaves",
-					 * leave.getSickLeaves());
-					 */
-
-					jsonArray.add(jsonObject);
-				
-			}
-		} 
+		}
 		res.setContentType("application/json");
 		return jsonArray.toJSONString();
 
 	}
 
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/leaveStatus", method = RequestMethod.GET)
+	@SuppressWarnings({ "unchecked", "unused" })
+	@RequestMapping(value = "/leaveHistory", method = RequestMethod.GET)
 	@ResponseBody
-	public String viewStatus(HttpServletRequest req, HttpServletResponse res) {
+	public String leaveHistory(HttpServletRequest req, HttpServletResponse res) {
+		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		// HttpSession session = req.getSession();
-		// String team = (String) session.getAttribute("Team");
-		String status = req.getParameter("Status");
-		// Query pending = pm.newQuery(LeaveRequestBeanClass.class, "(team == '"
-		// + team + "' )" + "&& status == '" + status + "' ");
-		Query statusInfo = pm.newQuery(LeaveRequestBeanClass.class);
-		statusInfo.setFilter(" status == '" + status + "' ");
-
-		List<LeaveRequestBeanClass> leaveStatus = (List<LeaveRequestBeanClass>) statusInfo
+		// Create the Object for LeaveRequestBeanClass
+		LeaveRequestBeanClass leaves = LeaveRequestBeanClass.getInstance();
+		String team = req.getParameter("Team");
+		Query history = pm.newQuery(LeaveRequestBeanClass.class);
+		history.setFilter(" team == '" + team + "' ");
+		List<LeaveRequestBeanClass> leavesTaken = (List<LeaveRequestBeanClass>) history
 				.execute();
-
-		JSONObject jsonObject = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-
-		for (LeaveRequestBeanClass leave : leaveStatus) {
-
+		for (LeaveRequestBeanClass leave : leavesTaken) {
+			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("AppliedDate", leave.getAppliedDate());
 			jsonObject.put("ApprovedDate", leave.getApprovedDate());
 			jsonObject.put("LeaveFrom", leave.getLeaveFrom());
@@ -140,8 +108,46 @@ public class LeaveRequestController {
 			 * jsonObject.put("PrivilegeLeaves", leave.getPrivilegeLeaves());
 			 * jsonObject.put("SickLeaves", leave.getSickLeaves());
 			 */
-
+			// System.out.println(jsonObject.get("AppliedDate"));
 			jsonArray.add(jsonObject);
+
+		}
+		res.setContentType("application/json");
+		return jsonArray.toJSONString();
+
+	}
+
+	@SuppressWarnings({ "unchecked", "unused" })
+	@RequestMapping(value = "/leaveStatus", method = RequestMethod.GET)
+	@ResponseBody
+	public String viewStatus(HttpServletRequest req, HttpServletResponse res) {
+		// Create the singleton Object for persistence manager Class
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		// Create the Object for LeaveRequestBeanClass
+		LeaveRequestBeanClass leaves = LeaveRequestBeanClass.getInstance();
+		String status = req.getParameter("Status");
+		// Query pending = pm.newQuery(LeaveRequestBeanClass.class, "(team == '"
+		// + team + "' )" + "&& status == '" + status + "' ");
+		Query statusInfo = pm.newQuery(LeaveRequestBeanClass.class);
+		statusInfo.setFilter(" status == '" + status + "' ");
+		List<LeaveRequestBeanClass> leaveStatus = (List<LeaveRequestBeanClass>) statusInfo
+				.execute();
+		JSONArray jsonArray = new JSONArray();
+		for (LeaveRequestBeanClass leave : leaveStatus) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("AppliedDate", leave.getAppliedDate());
+			jsonObject.put("ApprovedDate", leave.getApprovedDate());
+			jsonObject.put("LeaveFrom", leave.getLeaveFrom());
+			jsonObject.put("LeaveTo", leave.getLeaveTo());
+			jsonObject.put("EmployeeName", leave.getNameOfApplicant());
+			jsonObject.put("ApprovedBy", leave.getNameOfPoc());
+			jsonObject.put("Status", leave.getStatus());
+			jsonObject.put("EmailId", leave.getEmployeeEmailId());
+			jsonObject.put("Key", leave.getKey());
+			jsonObject.put("Team", leave.getTeam());
+			jsonArray.add(jsonObject);
+		//	System.out.println(jsonObject.get("EmailId") + "   "
+			//		+ jsonObject.get("Key"));
 		}
 
 		res.setContentType("application/json");
@@ -149,13 +155,15 @@ public class LeaveRequestController {
 
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	@RequestMapping(value = "/updateLeaveStatus", method = RequestMethod.POST)
 	public ModelAndView updateStatus(HttpServletRequest req, ModelAndView model) {
-		// LeaveRequestBeanClass lr = new LeaveRequestBeanClass();
+
+		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		// LeaveRequestBeanClass leaveRequest = LeaveRequestBeanClass
-		// .getInstance();
+		// Create the Object for LeaveRequestBeanClass
+		LeaveRequestBeanClass leaveRequest = LeaveRequestBeanClass
+				.getInstance();
 
 		try {
 
@@ -192,6 +200,7 @@ public class LeaveRequestController {
 				leave.setApprovedDate(approvedDate);
 				leave.setNameOfPoc(approvedBy);
 				leave.setStatus(status);
+				// leave.setKey(key);
 				pm.makePersistent(leave);
 			}
 
@@ -225,11 +234,9 @@ public class LeaveRequestController {
 
 		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		// HttpSession session = req.getSession();
 		// Create the Object for LeaveRequestBeanClass
 		LeaveRequestBeanClass leaveRequest = LeaveRequestBeanClass
 				.getInstance();
-		// EmployeeBeanClass employee = new EmployeeBeanClass();
 
 		try {
 
@@ -251,16 +258,6 @@ public class LeaveRequestController {
 			String approvedDate = "Not Assigned";
 			String nameOfPoc = "Not Approved";
 			String status = "Pending";
-
-			// System.out.println("i am in");
-			/*
-			 * long leaveF=Long.parseLong(leaveFrom); long
-			 * leaveT=Long.parseLong(leaveTo);
-			 */
-
-			/*
-			 * System.out.println(leaveF); System.out.println(leaveT);
-			 */
 
 			String message = "Leave Request From " + nameOfApplicant + "\n"
 					+ "Date From " + leaveFrom + " To " + leaveTo;
@@ -296,7 +293,7 @@ public class LeaveRequestController {
 
 			if (emailIdTo != null && emailIdTo != "") {
 
-				// log.info(" message True" + response);
+				log.info(" message True" + response);
 				response = sendMail(nameOfApplicant, emailIdFrom, nameOfPoc,
 						emailIdTo, message);
 				responseMessage = "Your Leave Request was Sent Successfully To "
@@ -307,19 +304,16 @@ public class LeaveRequestController {
 				response = sendMail(nameOfPoc, emailIdTo, nameOfApplicant,
 						emailIdFrom, responseMessage);
 
-				// log.info("Mail Send Successfully :" + response);
-				// log.info(" welcome " + emailIdTo + " message " + response);
+				log.info("Mail Send Successfully :" + response);
+				log.info(" welcome " + emailIdTo + " message " + response);
 			} else {
-				// log.info(" message false :" + response);
+				log.info(" message false :" + response);
 				// response = "Failed";
 				log.info("Mail Not Send....,Receipent MailId not Found or Null.....,"
 						+ response);
 			}
 
-			// model.addObject("Mail", "Your Mail was sent successfully");
-
 			pm.makePersistent(leaveRequest);
-			// model.setViewName("LoginTemplate");
 
 		} catch (Exception e) {
 			log.warn("To address Mismatch");

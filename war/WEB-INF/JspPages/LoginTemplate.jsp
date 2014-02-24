@@ -71,7 +71,7 @@ function updatePassword(){
 	var parameters="EmailId="+emailId+"&Password="+password;
 	var url="/updatePassword";
 	var method="POST";	
-	alert(parameters);
+//	alert(parameters);
 	var Pass=sendPostRequest(method,parameters, url);	
 	document.getElementById("updatePass").blur();
 }
@@ -88,12 +88,12 @@ function addEmployee(){
 	var team = document.getElementById("adepartment")[teamName].text;	
 	var parameters="EmployeeName="+employeeName+"&EmployeeId="+employeeId+"&DateOfJoining="+dateOfJoining+"&EmailId="+emailId+
 	"&Address="+address+"&Department="+team+"&Role="+role+"&MobileNo="+mobileNo+"&Password="+password;
-	alert(parameters);
+//	alert(parameters);
 	var url="/register";
 	var method="POST";	
 	var add=sendPostRequest(method,parameters, url);	
 	document.getElementById("register").blur();
-	alert("Employee Record Added");
+//	alert("Employee Record Added");
 }
 function updateEmployee(){
 	var employeeName= document.getElementById("EmployeeName").value;
@@ -108,14 +108,14 @@ function updateEmployee(){
 	var team = document.getElementById("Department")[teamName].text;	
 	var parameters="EmployeeName="+employeeName+"&EmployeeId="+employeeId+"&DateOfJoining="+dateOfJoining+"&EmailId="+emailId+
 	"&Address="+address+"&Department="+team+"&Role="+role+"&MobileNo="+mobileNo+"&Password="+password;
-	alert(parameters);
+//	alert(parameters);
 	
 	var url="/register";
 	var method="POST";
 	
 	var update=sendPostRequest(method,parameters, url);	
 	document.getElementById("update").blur();
-	alert("Employee Record Added");
+//	alert("Employee Record Added");
 }
 
 function sendingLeaveRequest(){		
@@ -141,7 +141,7 @@ function sendingLeaveRequest(){
 	if(document.getElementById("otherLeave").checked===true)
 		var other=1;
 	else other=0;
-	alert(sickLeave+"  "+casualLeave+"  "+privilegeLeave+" "+other);
+//	alert(sickLeave+"  "+casualLeave+"  "+privilegeLeave+" "+other);
 	
 	
 	var parameters = "EmailIdFrom="	+ emailIdFrom +"&EmailIdTo=" + emailIdTo+
@@ -171,7 +171,7 @@ function sendingLeaveRequest(){
 
 function approvedStatus(id) {	
 		var row = document.getElementsByTagName('TR').length;
-		for (var j = 1; j <= row; j++) {
+		for (var j = 0; j < row; j++) {
 			var status = 'status' + j;
 			var email= "email" + j;
 			var nameOfApplicant="applicant" + j;
@@ -199,7 +199,6 @@ function approvedStatus(id) {
 
 				var url = "/updateLeaveStatus";
 				var method = "POST";
-				//alert(parameters+" "+url);
 				var sendMail = confirm("Press ok to send Email and Update the Leave Request Status else click cancel");
 				if (sendMail == true) {
 					var mail = sendPostRequest(method, parameters, url);
@@ -233,7 +232,6 @@ var request;
 					var JSONObject = JSON.parse(request.responseText);
 					document.getElementById("EmployeeName").value = JSONObject.employeeName;
 					document.getElementById("EmployeeId").value = JSONObject.employeeId;
-					//document.getElementById("Department").value=JSONObject.team ;
 					document.getElementById("Role").value = JSONObject.role;
 					document.getElementById("Address").value = JSONObject.address;
 					document.getElementById("DateOfJoining").value = JSONObject.dateOfJoining;
@@ -279,7 +277,11 @@ var request;
 	var parameters="Team="+team;
 	var url="/leaveHistory?Team="+team;
 	var method="GET";		
-	var table=document.getElementById("historyTable");
+	var table=document.getElementById("historyTable");	
+	var tableRows = table.rows.length;	
+	for (var j = tableRows-1; j >0; j--) {
+		table.deleteRow(j);
+		}
 	sendLeaveHistory(method, url,table);
 	document.getElementById("leavesHistoryTable").style.display='block';
 			
@@ -351,7 +353,12 @@ var request;
 		var status = document.getElementById("viewStatus")[statusName].text;
 		var url = "/leaveStatus?Status=" + status;
 		var method = "GET";
-		var table = document.getElementById("statusTable");
+		var table=document.getElementById("statusTable");
+		var tableRows = document.getElementById("statusTable").rows.length;		
+		for (var j = tableRows-1; j >0; j--) {
+			table.deleteRow(j);
+			}
+		
 		fetchLeaveStatusHistory(method, url, table);
 		document.getElementById("leaveStatusTable").style.display = 'block';
 	}
@@ -371,7 +378,7 @@ var request;
 			request.onreadystatechange = function() {
 				if (request.readyState == 4 && request.status == 200) {
 					var jsonData = JSON.parse(request.responseText);					
-					//var ind = 0;
+					var ind = 0;
 					var k;
 					var keys = [];
 					for ( var k in jsonData) {
@@ -382,39 +389,66 @@ var request;
 					keys.sort();
 					var len = keys.length;
 					for (var i = 0; i < len; i++) {
+						alert("keys "+len);
 						var rowIndex = i + 1;
 						var row = table.insertRow(rowIndex);
 						k = keys[i];
-						var cell1 = row.insertCell(0);
-						cell1.innerHTML = jsonData[k].EmployeeName;
-						var cell2 = row.insertCell(1);
-						cell2.innerHTML = jsonData[k].LeaveFrom;
-						var cell3 = row.insertCell(2);
-						cell3.innerHTML = jsonData[k].LeaveTo;
-						var cell4 = row.insertCell(3);
-						cell4.innerHTML = jsonData[k].AppliedDate;
-						var cell5 = row.insertCell(4);
-						cell5.innerHTML = jsonData[k].ApprovedDate;
-						var cell6 = row.insertCell(5);
-						cell6.innerHTML = jsonData[k].ApprovedBy;
-						var cell7 = row.insertCell(6);
+						
 						if(jsonData[k].Status==="Pending"){
-							alert("Iam pending");
-							var select=document.createElement("select");
-							var option=document.createElement("option");
+							var cell1 = row.insertCell(0);
+							cell1.innerHTML = jsonData[k].EmployeeName;
+							cell1.id="applicant"+k;
+							var cell2 = row.insertCell(1);
+							cell2.innerHTML = jsonData[k].LeaveFrom;
+							var cell3 = row.insertCell(2);
+							cell3.innerHTML = jsonData[k].LeaveTo;
+							var cell4 = row.insertCell(3);
+							cell4.innerHTML = jsonData[k].AppliedDate;
+							cell4.id="appliedDate"+k;
+							var cell5 = row.insertCell(4);
+							cell5.innerHTML = jsonData[k].ApprovedDate;
+							var cell6 = row.insertCell(5);
+							cell6.innerHTML = jsonData[k].ApprovedBy;
+							var cell7 = row.insertCell(6);
+							var cell8 = row.insertCell(7);
+							var cell9 = row.insertCell(8);
+							var cell10 = row.insertCell(9);
+							var emailId=jsonData[k].EmailId;
+							var key=jsonData[k].Key;
+							var team=jsonData[k].Team;
+						
+							cell8.innerHTML="<input name='Email' type='hidden' value='"+emailId+"' id='email"+k+"'>";
+							cell9.innerHTML="<input name='Key' type='hidden' value='"+key+"' id='key"+k+"'>";
+							cell10.innerHTML="<input name='Team' type='hidden' value='"+team+"' id='team"+k+"'>";	
 							var status=["Pending","Approved","Declined"];
-							cell7.innerHTML ="<select id='status"+k+"'>";	
-							for(var ind=0;ind<3;ind++){
-								option.value=status[ind];
-								alert(option.value);
-							//cell7.innerHTML=cell7.innerHTML+"<option value='"+jsonData[k].Status+"'>"+jsonData[k].Status+"</option>" ;
-							//cell7.innerHTML=cell7.innerHTML+"<option value='Approved'>"+"Approved"+"</option>" ;
-							//cell7.innerHTML=cell7.innerHTML+"<option value='"+status[ind]+"'>"+status[ind]+"</option>" ;
-							}
-							 
-							cell7.innerHTML =cell7.innerHTML+"</select>";
+							
+							cell7.innerHTML ="<select class='form-control' name='Status' id='status"+k+"'onchange='approvedStatus(id)'><option value='Pending'>"+"Pending"+"</option><option value='Approved'>"+"Approved"+"</option><option value='Declined'>"+"Declined"+"</option>";	
+							
+							cell7.innerHTML +="</select>"; 
+							
 						}
 						else{
+							var cell1 = row.insertCell(0);
+							cell1.innerHTML = jsonData[k].EmployeeName;
+							cell1.id="applicant"+k;
+							var cell2 = row.insertCell(1);
+							cell2.innerHTML = jsonData[k].LeaveFrom;
+							var cell3 = row.insertCell(2);
+							cell3.innerHTML = jsonData[k].LeaveTo;
+							var cell4 = row.insertCell(3);
+							cell4.innerHTML = jsonData[k].AppliedDate;
+							cell4.id="appliedDate"+k;
+							var cell5 = row.insertCell(4);
+							cell5.innerHTML = jsonData[k].ApprovedDate;
+							var cell6 = row.insertCell(5);
+							cell6.innerHTML = jsonData[k].ApprovedBy;
+							var cell7 = row.insertCell(6);
+							var cell8 = row.insertCell(7);
+							var cell9 = row.insertCell(8);
+							var cell10 = row.insertCell(9);
+							var emailId=jsonData[k].EmailId;
+							var key=jsonData[k].Key;
+							var team=jsonData[k].Team;					
 							cell7.innerHTML = jsonData[k].Status;
 						}
 												
@@ -798,10 +832,7 @@ var request;
 													</table>
 
 												</div>
-											</div>
-											
-
-										
+											</div>			
 										
 										<%}else{%>									
 										
@@ -844,36 +875,17 @@ var request;
 										<h3 align="center">Leave Request Form</h3>
 										<hr>
 										<form class="form-horizontal" role="form" method="POST"
-											style="margin-left: 100px;">
+											style="margin-left: 50px;">
 
 											<div class="form-group">
-												<label class="col-sm-3 control-label">EmployeeName</label>
+												<label class="col-sm-2 control-label">EmployeeName</label>
 												<div class="col-sm-4">
 													<input class="form-control" maxlength="30"
-														placeholder="Krish" name="EmployeeName" type="text"
+														placeholder="EmployeeName" name="EmployeeName" type="text"
 														id="employeeName"
 														value="<%=session.getAttribute("EmployeeName")%>" required>
 												</div>
-											</div>
-											<div class="form-group">
-												<label class="col-sm-3 control-label">Role</label>
-												<div class="col-sm-4">
-													<input class="form-control" type="text" name="Role"
-														id="role" placeholder="JuniorSoftwareEngineer"
-														value="<%=session.getAttribute("role")%>" required>
-												</div>
-											</div>
-											<div class="form-group">
-												<label class="col-sm-3 control-label">Team</label>
-												<div class="col-sm-4">
-													<input class="form-control" maxlength="30"
-														placeholder="Developers"
-														value="<%=session.getAttribute("Team")%>" name="Team"
-														type="text" id="team" required>
-												</div>
-											</div>
-											<div class="form-group">
-												<label class="col-sm-3 control-label">EmailId</label>
+												<label class="col-sm-2 control-label">Email</label>
 												<div class="col-sm-4">
 													<input class="form-control" maxlength="30"
 														placeholder="abc@gmail.com" name="EmailId" type="email"
@@ -882,15 +894,29 @@ var request;
 												</div>
 											</div>
 											<div class="form-group">
-												<label class="col-sm-3 control-label">LeaveFrom</label>
+												<label class="col-sm-2 control-label">Role</label>
+												<div class="col-sm-4">
+													<input class="form-control" type="text" name="Role"
+														id="role" placeholder="JuniorSoftwareEngineer"
+														value="<%=session.getAttribute("role")%>" required>
+												</div>
+												<label class="col-sm-2 control-label">Team</label>
+												<div class="col-sm-4">
+													<input class="form-control" maxlength="30"
+														placeholder="Developers"
+														value="<%=session.getAttribute("Team")%>" name="Team"
+														type="text" id="team" required>
+												</div>
+											</div>
+											
+											<div class="form-group">
+												<label class="col-sm-2 control-label">LeaveFrom</label>
 												<div class="col-sm-4">
 													<input class="form-control" maxlength="10"
 														placeholder="MM/dd/yyyy" name="LeaveFrom" type="date"
 														id="leaveFrom" value="" required>
 												</div>
-											</div>
-											<div class="form-group">
-												<label class="col-sm-3 control-label">LeaveTo</label>
+												<label class="col-sm-2 control-label">LeaveTo</label>
 												<div class="col-sm-4">
 													<input class="form-control" maxlength="10"
 														placeholder="MM/dd/yyyy" name="LeaveTo" type="date"
@@ -898,27 +924,25 @@ var request;
 												</div>
 											</div>
 											<div class="form-group">
-												<label class="col-sm-3 control-label">RequestDate</label>
+												<label class="col-sm-2 control-label">RequestDate</label>
 												<div class="col-sm-4">
 													<%
 														Date today = new Date();
-																									SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
+														SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
 													%>
 													<input class="form-control" maxlength="10"
 														placeholder="MM/dd/yyyy" value="<%=date.format(today)%>"
 														name="RequestDate" type="text" id="requestDate" required>
 												</div>
-											</div>
-											<div class="form-group">
-												<label class="col-sm-3 control-label">TeamLeadMailId</label>
+												<label class="col-sm-2 control-label">TeamLeadMailId</label>
 												<div class="col-sm-4">
 													<input class="form-control" maxlength="30"
 														value="<%=session.getAttribute("TeamLead")%>"
 														name="EmailIdTo" type="text" id="emailIdTo" required>
 												</div>
-											</div>
+											</div>											
 											<div class="form-group">
-												<label class="col-sm-3 control-label">LeaveType</label>
+												<label class="col-sm-2 control-label">LeaveType</label>
 												<div class="col-sm-9">
 													<label class="checkbox-inline"> <input
 														type="checkbox" id="sickLeave" value="SickLeave">
@@ -933,12 +957,11 @@ var request;
 														type="checkbox" id="otherLeave" value="OtherLeave">
 														OtherLeave
 													</label>
-												</div>
-												<label style="color: red;">${Mail}</label>
+												</div>												
 											</div>
 											<hr>
 											<div class="form-group">
-												<div class="col-sm-offset-3 col-sm-5">
+												<div class="col-sm-offset-4 col-sm-5">
 													<button type="button" class="btn btn-default"
 														name="SendEmail" id="send" onclick="sendingLeaveRequest()">SendEmail</button>
 													<button type="reset" name="Reset" class="btn btn-default">Reset</button>
@@ -982,7 +1005,7 @@ var request;
 															<th>Status</th>
 
 														</tr>
-														<%
+														<%-- <%
 															int count = 0;
 														%>
 														<c:forEach items="${PendingLeaves}" var="LeaveList">
@@ -1008,8 +1031,8 @@ var request;
 																		<option value="Approved">Approved</option>
 																		<option value="Declined">Declined</option>
 																</select></td>
-															</tr>
-														</c:forEach>
+															</tr> 
+														</c:forEach> --%>
 													</table>
 												</div>
 											</div>
@@ -1045,7 +1068,7 @@ var request;
 											<div class="form-group">
 												<label class="col-sm-2 control-label">EmployeeName</label>
 												<div class="col-sm-4">
-													<input class="form-control" placeholder="Gopal123"
+													<input class="form-control" placeholder="EmployeeName"
 														name="EmployeeName" type="text" id="aemployeeName"
 														value="" required>
 
@@ -1226,9 +1249,9 @@ var request;
 											</div>
 
 											<div class="form-group">
-												<label class="col-sm-2 control-label">EmailId</label>
+												<label class="col-sm-2 control-label">Email</label>
 												<div class="col-sm-4">
-													<input class="form-control" placeholder="Gopal88@gmail.com"
+													<input class="form-control" placeholder="Abc@gmail.com"
 														name="EmailId" type="email" id="EmailId" value="" required>
 												</div>
 												<label class="col-sm-2 control-label">MobileNo</label>
@@ -1284,13 +1307,13 @@ var request;
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="col-sm-2 control-label">Employeeid</label>
+										<label class="col-sm-2 control-label">EmployeeId</label>
 										<div class="col-sm-5">
 											<h5><%=session.getAttribute("EmployeeId")%></h5>
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="col-sm-2 control-label">Emailid</label>
+										<label class="col-sm-2 control-label">Email</label>
 										<div class="col-sm-5">
 											<h5><%=session.getAttribute("EmailId")%></h5>
 										</div>
