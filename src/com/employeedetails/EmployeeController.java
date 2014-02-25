@@ -78,7 +78,7 @@ public class EmployeeController {
 			// Persist the Employee Object into DataStore
 			pm.makePersistent(employee);
 			
-		//	PersistenceManager pmf = PMF.get().getPersistenceManager();
+		
 			// Create the Object for LeaveRequestBeanClass
 			LeaveType leave = LeaveType.getInstance();
 			leave.setEmailId(emailId);

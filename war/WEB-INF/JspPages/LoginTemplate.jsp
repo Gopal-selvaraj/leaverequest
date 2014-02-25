@@ -123,7 +123,8 @@ function sendingLeaveRequest(){
 	var employeeName= document.getElementById("employeeName").value;
 	var emailIdFrom = document.getElementById("emailId").value;
 	var emailIdTo = document.getElementById("emailIdTo").value;
-	var team = document.getElementById("team").value;	
+	var teamName = document.getElementById("teams").selectedIndex;
+	var team = document.getElementById("teams")[teamName].text;	
 	var role=document.getElementById("role").value;
 	var requestDate = document.getElementById("requestDate").value;
 	var leaveTo = document.getElementById("leaveTo").value;
@@ -280,16 +281,16 @@ var request;
 	var parameters="Team="+team;
 	var url="/leaveHistory?Team="+team;
 	var method="GET";		
-	alert(parameters);
+	//alert(parameters);
 	var table=document.getElementById("historyTable");	
 	var tableRows = table.rows.length;	
 	for (var j = tableRows-1; j >0; j--) {
-		table.deleteRow(j);
+		table.deleteRow(j);	
 		}
-	sendLeaveHistory(method, url,table);
-	document.getElementById("leavesHistoryTable").style.display='block';
-			
+	leaveHistory(method, url,table);
+	document.getElementById("leavesHistoryTable").style.display='block';			
 } 
+ 
 //Fetch the Leaves List by the employee
  function fetchLeaves(){	
 		var team = "<%=session.getAttribute("Team")%>";
@@ -297,14 +298,18 @@ var request;
 		var url = "/employeeLeaveHistory?Team=" + team + "&EmailId=" + emailId;
 		var method = "GET";
 		var table = document.getElementById("historyTable");
-		sendLeaveHistory(method, url, table);
+		var tableRows = table.rows.length;	
+		for (var j = tableRows-1; j >0; j--) {
+			table.deleteRow(j);	
+			}
+		leaveHistory(method, url, table);
 		document.getElementById("leavesHistoryTable").style.display = 'block';
 				
 	}
 
+ 	
 	
-	
- function sendLeaveHistory(method, url, table) {
+ function leaveHistory(method, url, table) {
 		if (window.XMLHttpRequest) {
 			request = new XMLHttpRequest();
 		} else if (window.ActiveXObject) {
@@ -397,7 +402,7 @@ var request;
 					keys.sort();
 					var len = keys.length;
 					for (var i = 0; i < len; i++) {
-						alert("keys "+len);
+					//	alert("keys "+len);
 						var rowIndex = i + 1;
 						var row = table.insertRow(rowIndex);
 						k = keys[i];
@@ -608,7 +613,7 @@ var request;
 								<ul class="dropdown-menu">
 									<li><a href="#" onclick="showHome()">Home</a></li>
 									<li><a href="#" onclick="showProfileInfo()">Profile</a></li>
-									<li><a href="#" onclick="showSettings()">Settings</a></li>
+									<li><a href="#" onclick="showSettings()">Change Password</a></li>
 									<li class="divider"></li>
 									<li><a href="/logout">Logout</a></li>
 								</ul></li>
@@ -736,9 +741,9 @@ var request;
 										data-toggle="tab">Profile Information</a></li>
 								</ul>
 								<div class="tab-content">
-									<!-- Change Profile Information -->
+									<!-- Change Password -->
 									<div class="tab-pane active" id="profileInformation">
-										<h3 align="center">Profile Information</h3>
+										<h3 align="center">Password Information</h3>
 										<hr>
 										<form class="form-horizontal" role="form" method="post"
 											style="margin-left: 100px;">
@@ -797,7 +802,7 @@ var request;
 								<!-- Leaves Tab panes -->
 								<div class="tab-content">
 									
-									<!-- Leave Summary -->
+								<%-- 	<!-- Leave Summary -->
 									<div class="tab-pane fade in active" id="leaveSummary">
 
 										<h3 align="center">Leave Summary</h3>
@@ -843,15 +848,16 @@ var request;
 										</form>						
 									</div>
 									<!--  End of Leave Summary --> 
-									<!-- Leave History -->
+									<!-- Leave History --> --%>
 									<div class="tab-pane fade " id="leaveHistory">
 
 										<h3 align="center">Leave History</h3>
-										<form class="form-horizontal" role="form" method="GET">
-									<%
+										<%
 											if (session.getAttribute("role").equals("TeamLeader")
 											|| session.getAttribute("role").equals("Administrator")) {
-										%>		
+										%>	
+										<form class="form-horizontal" role="form" method="GET">
+										
 										<hr>
 											<div class="form-group">
 												<label class="col-sm-2 control-label">Department</label>
@@ -902,10 +908,10 @@ var request;
 													</table>
 
 												</div>
-											</div>			
-										
+											</div>									
+										</form>
 										<%}else{%>									
-										
+										<form class="form-horizontal" role="form" method="GET">
 											<hr>
 											<div class="table-responsive" id="leavesHistoryTable"
 												style="display: none">
@@ -926,16 +932,15 @@ var request;
 													</table>
 
 												</div>
-											</div>
+											</div>	
+											<script>
+												fetchLeaves();
+											</script>				
+											</form>
 											
-										
-										<script>
-											fetchLeaves();
-										</script>
-										<%
+											<%
 												}
 											%>
-											</form>
 									</div>
 									
 									<!-- End of Leave History -->
@@ -972,10 +977,21 @@ var request;
 												</div>
 												<label class="col-sm-2 control-label">Team</label>
 												<div class="col-sm-4">
-													<input class="form-control" maxlength="30"
-														placeholder="Developers"
-														value="<%=session.getAttribute("Team")%>" name="Team"
-														type="text" id="team" required>
+													<select class="form-control" id="teams"
+														name="Team">
+														<option>AccountManagement</option>
+														<option>BusinessSupport</option>
+														<option>ContentWriting</option>
+														<option>Designing</option>
+														<option>Developement</option>
+														<option>Financial</option>
+														<option>HumanResources</option>
+														<option>InformationTechnology</option>
+														<option>OpsTeam</option>
+														<option>Performance</option>
+														<option>QualityAssurance</option>
+														<option>Testing</option>
+													</select>
 												</div>
 											</div>
 											

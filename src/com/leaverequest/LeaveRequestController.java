@@ -43,10 +43,9 @@ public class LeaveRequestController {
 		return "LeaveRequestForm";
 	}
 
-	/*@SuppressWarnings({ "unchecked" })
-	@RequestMapping(value = "/employeeLeaveHistory", method = RequestMethod.GET)
-	@ResponseBody
-	public String employeeLeaveHistory(HttpServletRequest req,
+	@SuppressWarnings({ "unchecked" })
+	@RequestMapping(value = "/employeeLeaveHistory", method = RequestMethod.GET)	
+	public @ResponseBody String employeeLeaveHistory(HttpServletRequest req,
 			HttpServletResponse res) {
 		// Create the singleton Object for persistence manager Class
 		PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -54,8 +53,8 @@ public class LeaveRequestController {
 		LeaveRequestBeanClass.getInstance();
 		String team = req.getParameter("Team");
 		String emailId = req.getParameter("EmailId");		
-		Query history = pm.newQuery(LeaveRequestBeanClass.class);
-		history.setFilter(" team == '" + team + "' ");
+		Query history = pm.newQuery(LeaveRequestBeanClass.class," team == '" + team + "' ");
+		history.setFilter(" employeeEmailId == '" + emailId + "' ");
 		List<LeaveRequestBeanClass> leavesTaken = (List<LeaveRequestBeanClass>) history
 				.execute();
 		JSONArray jsonArray = new JSONArray();
@@ -69,28 +68,26 @@ public class LeaveRequestController {
 				jsonObject.put("EmployeeName", leave.getNameOfApplicant());
 				jsonObject.put("ApprovedBy", leave.getNameOfPoc());
 				jsonObject.put("Status", leave.getStatus());
-				System.out.println(jsonObject.get("AppliedDate"));
 				jsonArray.add(jsonObject);
 			}
 		}
 		res.setContentType("application/json");
 		return jsonArray.toJSONString();
 
-	}*/
+	}
 
 	@SuppressWarnings({ "unchecked" })
-	@RequestMapping(value = "/leaveHistory", method = RequestMethod.GET)
-	@ResponseBody
-	public String leaveHistory(HttpServletRequest req, HttpServletResponse res) {
-		 		// Create the singleton Object for persistence manager Class
+	@RequestMapping(value = "/leaveHistory", method = RequestMethod.GET)	
+	public @ResponseBody String leaveHistory(HttpServletRequest req, HttpServletResponse res) {
+				// Create the singleton Object for persistence manager Class
 		 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		 		// Create the Object for LeaveRequestBeanClass
 		 		LeaveRequestBeanClass.getInstance();
-		 		String team = req.getParameter("Team");
+		 		String team = req.getParameter("Team");		 		
 		 		Query history = pm.newQuery(LeaveRequestBeanClass.class);
 		 		history.setFilter(" team == '" + team + "' ");
 		 		List<LeaveRequestBeanClass> leavesTaken = (List<LeaveRequestBeanClass>) history
-		 				.execute();
+		 				.execute();			 		
 		 		JSONArray jsonArray = new JSONArray();
 		 		for (LeaveRequestBeanClass leave : leavesTaken) {
 		 			JSONObject jsonObject = new JSONObject();
@@ -100,9 +97,8 @@ public class LeaveRequestController {
 		 			jsonObject.put("LeaveTo", leave.getLeaveTo());
 		 			jsonObject.put("EmployeeName", leave.getNameOfApplicant());
 		 			jsonObject.put("ApprovedBy", leave.getNameOfPoc());
-		 			jsonObject.put("Status", leave.getStatus());
-		 			jsonArray.add(jsonObject);
-		 
+		 			jsonObject.put("Status", leave.getStatus());		 			
+		 			jsonArray.add(jsonObject);		
 		 		}
 		 		res.setContentType("application/json");
 		 		return jsonArray.toJSONString();
@@ -158,7 +154,6 @@ public class LeaveRequestController {
 		statusInfo.setFilter(" status == '" + status + "' ");
 		List<LeaveRequestBeanClass> leaveStatus = (List<LeaveRequestBeanClass>) statusInfo
 				.execute();
-		System.out.println(leaveStatus.size());
 		JSONArray jsonArray = new JSONArray();
 		for (LeaveRequestBeanClass leave : leaveStatus) {
 			JSONObject jsonObject = new JSONObject();
@@ -173,8 +168,7 @@ public class LeaveRequestController {
 			jsonObject.put("Key", leave.getKey());
 			jsonObject.put("Team", leave.getTeam());
 			jsonArray.add(jsonObject);
-		//	System.out.println(jsonObject.get("EmailId") + "   "
-			//		+ jsonObject.get("Key"));
+		
 		}
 
 		res.setContentType("application/json");
