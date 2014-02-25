@@ -6,21 +6,15 @@ import javax.jdo.annotations.PrimaryKey;
 @PersistenceCapable
 public class LeaveType {
 
-	@PrimaryKey
-	private String key;
+	@PrimaryKey	
+	private String emailId;
+	
 	private int sickLeaves;
 	private int casualLeaves;
-	private int previleageLeaves;
+	private int previlegeLeaves;
 	private int otherLeaves;
 	
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
-
+	
 	public int getSickLeaves() {
 		return sickLeaves;
 	}
@@ -37,12 +31,12 @@ public class LeaveType {
 		this.casualLeaves = casualLeaves;
 	}
 
-	public int getPrevileageLeaves() {
-		return previleageLeaves;
+	public int getPrevilegeLeaves() {
+		return previlegeLeaves;
 	}
 
 	public void setPrevileageLeaves(int previleageLeaves) {
-		this.previleageLeaves = previleageLeaves;
+		this.previlegeLeaves = previleageLeaves;
 	}
 
 	public int getOtherLeaves() {
@@ -62,6 +56,14 @@ public class LeaveType {
 			instance = new LeaveType();
 		}
 		return instance;
+	}
+
+	public String getEmailId() {
+		return emailId;
+	}
+
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
 	}
 	
 }

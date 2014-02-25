@@ -4,9 +4,7 @@ import javax.jdo.annotations.PersistenceCapable;
 
 
 @PersistenceCapable
-public class LeaveRequestBeanClass {
-
-	
+public class LeaveRequestBeanClass {	
 
 	private String key;
 	private String employeeEmailId;

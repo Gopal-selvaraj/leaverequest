@@ -28,6 +28,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<url-pattern>/updateLeaveStatus</url-pattern>		
 		<url-pattern>/leaveHistory</url-pattern>
 		<url-pattern>/employeeLeaveHistory</url-pattern>
+		<url-pattern>/leaveSummary</url-pattern>			
 		<url-pattern>/updatePassword</url-pattern>		
 	</servlet-mapping>
 

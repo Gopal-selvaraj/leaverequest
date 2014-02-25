@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.instanceclass.PMF;
 import com.leaverequest.LeaveRequestBeanClass;
+import com.leaverequest.LeaveType;
 
 @Controller
 public class EmployeeController {
@@ -76,6 +77,18 @@ public class EmployeeController {
 
 			// Persist the Employee Object into DataStore
 			pm.makePersistent(employee);
+			
+		//	PersistenceManager pmf = PMF.get().getPersistenceManager();
+			// Create the Object for LeaveRequestBeanClass
+			LeaveType leave = LeaveType.getInstance();
+			leave.setEmailId(emailId);
+			leave.setCasualLeaves(12);
+			leave.setPrevileageLeaves(12);
+			leave.setSickLeaves(12);
+			leave.setOtherLeaves(0);
+			pm.makePersistent(leave);
+		//	pmf.close();
+			
 
 		} catch (Exception e) {
 			// Incase of any failure in try block Error information stored in
@@ -91,6 +104,8 @@ public class EmployeeController {
 		else
 			return new ModelAndView("LoginTemplate");
 	}
+	
+	
 
 	@RequestMapping(value = "/homePage")
 	public String homePage() {
@@ -234,6 +249,14 @@ public class EmployeeController {
 
 			// Persist the Employee Object into DataStore
 			pm.makePersistent(employee);
+			
+			LeaveType leave = LeaveType.getInstance();
+			leave.setEmailId(emailId);
+			leave.setCasualLeaves(12);
+			leave.setPrevileageLeaves(12);
+			leave.setSickLeaves(12);
+			leave.setOtherLeaves(0);
+			pm.makePersistent(leave);
 
 		} catch (Exception e) {
 			// Incase of any failure in try block Error information stored in
@@ -265,19 +288,14 @@ public class EmployeeController {
 			// value
 			Query query = pm.newQuery(EmployeeBeanClass.class);
 			query.setFilter("employeeEmailId =='" + emailId + "' ");
-
+			
 			// using the List to get the entries from the data store
 			List<EmployeeBeanClass> employees = (List<EmployeeBeanClass>) query
 					.execute();
-			EmployeeBeanClass employeeLogin = employees.get(0);
-		
-			
-			if (employeeLogin.getPassword().equals(password)) {
-				
-			
+			EmployeeBeanClass employeeLogin = employees.get(0);		
+			if (employeeLogin.getPassword().equals(password)) {			
 				// Creating the session and setting the employee details
-				// into the session variables
-				
+				// into the session variables				
 				session.setAttribute("EmployeeName",
 						employeeLogin.getEmployeeName());
 				session.setAttribute("EmployeeId",

@@ -270,6 +270,9 @@ var request;
 		}
 
 	}
+	
+	
+	
 //Fetch the LeaveHistory List by the administrator
  function fetchLeaveHistory(){	
 	var teamName = document.getElementById("departments").selectedIndex;
@@ -277,6 +280,7 @@ var request;
 	var parameters="Team="+team;
 	var url="/leaveHistory?Team="+team;
 	var method="GET";		
+	alert(parameters);
 	var table=document.getElementById("historyTable");	
 	var tableRows = table.rows.length;	
 	for (var j = tableRows-1; j >0; j--) {
@@ -290,13 +294,16 @@ var request;
  function fetchLeaves(){	
 		var team = "<%=session.getAttribute("Team")%>";
 		var emailId = "<%=session.getAttribute("EmailId")%>";
-		var url = "/leaveHistory?Team=" + team + "&EmailId=" + emailId;
+		var url = "/employeeLeaveHistory?Team=" + team + "&EmailId=" + emailId;
 		var method = "GET";
 		var table = document.getElementById("historyTable");
 		sendLeaveHistory(method, url, table);
 		document.getElementById("leavesHistoryTable").style.display = 'block';
 				
 	}
+
+	
+	
  function sendLeaveHistory(method, url, table) {
 		if (window.XMLHttpRequest) {
 			request = new XMLHttpRequest();
@@ -312,6 +319,7 @@ var request;
 			request.onreadystatechange = function() {
 				if (request.readyState == 4 && request.status == 200) {
 					var jsonData = JSON.parse(request.responseText);					
+					//alert(jsonData);
 					var ind = 0;
 					var k;
 					var keys = [];
@@ -460,6 +468,67 @@ var request;
 		}
 	}
 
+ 	//Fetch the LeaveSummaryInfo List 
+	 function leaveSummaryInfo(){	
+		var emailId = "<%=session.getAttribute("EmailId")%>";		
+		var parameters="EmailId="+emailId;
+		var url="/leaveSummary?EmailId="+emailId;
+		var method="GET";		
+		var table=document.getElementById("summaryTable");	
+		var tableRows = table.rows.length;	
+		for (var j = tableRows-1; j >0; j--) {
+			table.deleteRow(j);
+			}
+		sendLeaveSummary(method, url,table);
+		document.getElementById("leaveSummaryTable").style.display='block';
+				
+	} 
+	
+	//leave summary
+	 function sendLeaveSummary(method, url, table) {
+	 		if (window.XMLHttpRequest) {
+	 			request = new XMLHttpRequest();
+	 		} else if (window.ActiveXObject) {
+	 			request = new ActiveXObject("MicroSoft.XMLHTTP");
+	 		}
+	 		try {
+
+	 			request.open(method, url, true);
+	 			request.setRequestHeader("Content-type",
+	 					"application/x-www-form-urlencoded");
+	 			request.send();
+	 			request.onreadystatechange = function() {
+	 				if (request.readyState == 4 && request.status == 200) {
+	 					var jsonData = JSON.parse(request.responseText);					
+	 					var ind = 0;
+	 					var k;
+	 					var keys = [];
+	 					for ( var k in jsonData) {
+	 						if (jsonData.hasOwnProperty(k)) {
+	 							keys.push(k);
+	 						}
+	 					}
+	 					keys.sort();
+	 					var len = keys.length;
+	 					for (var i = 0; i < len; i++) {
+	 						var rowIndex = i + 1;
+	 						var row = table.insertRow(rowIndex);
+	 						k = keys[i];
+	 						var cell1 = row.insertCell(0);
+	 						cell1.innerHTML = jsonData[k].SickLeaves;
+	 						var cell2 = row.insertCell(1);
+	 						cell2.innerHTML = jsonData[k].CasualLeaves;
+	 						var cell3 = row.insertCell(2);
+	 						cell3.innerHTML = jsonData[k].PrivilegeLeaves;
+	 						var cell4 = row.insertCell(3);
+	 						cell4.innerHTML = jsonData[k].OtherLeaves;												
+	 					}					
+	 				}
+	 			}
+	 		} catch (e) {
+	 			alert("Unable to connect server");
+	 		}
+	 	} 
 	
 </script>
 <script type="text/javascript">
@@ -710,8 +779,7 @@ var request;
 							<div id="leaveInfo" style="display: none;">
 								<!-- Nav tabs -->
 								<ul class="nav nav-tabs">
-									<!-- <li class="active"><a href="#leaveSummary"
-										data-toggle="tab">LeaveSummary</a></li> -->
+									<!-- <li class="active"><a href="#leaveSummary"data-toggle="tab" >LeaveSummary</a></li>  -->
 
 									<li><a href="#leaveRequest" data-toggle="tab">LeaveRequest</a></li>
 
@@ -728,14 +796,15 @@ var request;
 
 								<!-- Leaves Tab panes -->
 								<div class="tab-content">
-
-									<%-- 	<!-- Leave Summary -->
-									<div class="tab-pane active" id="leaveSummary">
+									
+									<!-- Leave Summary -->
+									<div class="tab-pane fade in active" id="leaveSummary">
 
 										<h3 align="center">Leave Summary</h3>
-										<form class="form-horizontal" role="form">
-
-											<table class="table ">
+										<form class="form-horizontal" role="form" method="GET">
+										<div class="table-responsive" id="leaveSummaryTable"
+												style="display: block">
+											<table class="table " id="summaryTable">
 												<tr>
 													<th>LeaveType</th>
 													<th>MaximumAllowedLeaves</th>
@@ -744,32 +813,36 @@ var request;
 												</tr>
 												<tr>
 													<td>SickLeave</td>
-													<td>1</td>
-													<td><%=session.getAttribute("SickLeave")%></td>
+													<td>12</td>
+													<td><%=session.getAttribute("sickLeave")%></td>
 													<td>1</td>
 												</tr>
 												<tr>
 													<td>CasualLeave</td>
-													<td>1</td>
-													<td><%=session.getAttribute("CasualLeave")%></td>
+													<td>12</td>
+													<td><%=session.getAttribute("casualLeave")%></td>
 													<td>1</td>
 												</tr>
 												<tr>
 													<td>PrivilegeLeave</td>
-													<td>15</td>
-													<td><%=session.getAttribute("PrivilegeLeave")%></td>
+													<td>12</td>
+													<td><%=session.getAttribute("privilegeLeave")%></td>
 													<td>15</td>
 												</tr>
 												<tr>
 													<td>LossOfPay</td>
 													<td>0</td>
-													<td><%=session.getAttribute("OtherLeave")%></td>
+													<td><%=session.getAttribute("otherLeave")%></td>
 													<td>0</td>
 												</tr>
 											</table>
-										</form>
+											<!-- <script type="text/javascript">
+										leaveSummaryInfo();
+										</script> -->
+										</div>
+										</form>						
 									</div>
-									<!--  End of Leave Summary --> --%>
+									<!--  End of Leave Summary --> 
 									<!-- Leave History -->
 									<div class="tab-pane fade " id="leaveHistory">
 
@@ -777,12 +850,9 @@ var request;
 										<form class="form-horizontal" role="form" method="GET">
 									<%
 											if (session.getAttribute("role").equals("TeamLeader")
-																						|| session.getAttribute("role").equals("Administrator")) {
-										%>								
-										
-										
-
-											<hr>
+											|| session.getAttribute("role").equals("Administrator")) {
+										%>		
+										<hr>
 											<div class="form-group">
 												<label class="col-sm-2 control-label">Department</label>
 												<div class="col-sm-3">
@@ -1005,34 +1075,7 @@ var request;
 															<th>Status</th>
 
 														</tr>
-														<%-- <%
-															int count = 0;
-														%>
-														<c:forEach items="${PendingLeaves}" var="LeaveList">
-															<%
-																++count;
-															%>
-															<input name="Email" type="hidden"
-																value="${LeaveList.employeeEmailId}"
-																id="email<%=count%>">
-															<input name="Key" type="hidden" value="${LeaveList.key}"
-																id="key<%=count%>">
-															<tr>
-																<td id="applicant<%=count%>">${LeaveList.nameOfApplicant}</td>
-																<td id="team<%=count%>">${LeaveList.team}</td>
-																<td id="role<%=count%>">${LeaveList.role}</td>
-																<td id="leaveFrom<%=count%>">${LeaveList.leaveFrom}</td>
-																<td id="leaveTo<%=count%>">${LeaveList.leaveTo}</td>
-																<td id="appliedDate<%=count%>">${LeaveList.appliedDate}</td>
-																<td><select class="form-control" name="Status"
-																	id="status<%=count%>"
-																	onchange="approvedStatus(this.id)">
-																		<option value="Pending">Pending</option>
-																		<option value="Approved">Approved</option>
-																		<option value="Declined">Declined</option>
-																</select></td>
-															</tr> 
-														</c:forEach> --%>
+														
 													</table>
 												</div>
 											</div>
